@@ -1,0 +1,33 @@
+{
+  "activation.villainousdifficultymultipliers.blackeye": "Difficulty Multiplier: Black Eye on!",
+  "activation.villainousdifficultymultipliers.cannon": "Difficulty Multiplier: Cannon on!",
+  "activation.villainousdifficultymultipliers.famine": "Difficulty Multiplier: Famine on!",
+  "activation.villainousdifficultymultipliers.venom": "Difficulty Multiplier: Venom on!",
+  "activation.villainousdifficultymultipliers.shift": "Difficulty Multiplier: Shift on!",
+  "activation.villainousdifficultymultipliers.karmicjustice": "Difficulty Multiplier: Karmic Justice on!",
+  "activation.villainousdifficultymultipliers.aging": "Difficulty Multiplier: Aging on!",
+  "activation.villainousdifficultymultipliers.softskin": "Difficulty Multiplier: Soft Skin on!",
+  "activation.villainousdifficultymultipliers.fatigue": "Difficulty Multiplier: Fatigue on!",
+  "deactivation.villainousdifficultymultipliers.blackeye": "Difficulty Multiplier: Black Eye off!",
+  "deactivation.villainousdifficultymultipliers.cannon": "Difficulty Multiplier: Cannon off!",
+  "deactivation.villainousdifficultymultipliers.famine": "Difficulty Multiplier: Famine off!",
+  "deactivation.villainousdifficultymultipliers.venom": "Difficulty Multiplier: Venom off!",
+  "deactivation.villainousdifficultymultipliers.shift": "Difficulty Multiplier: Shift off!",
+  "deactivation.villainousdifficultymultipliers.karmicjustice": "Difficulty Multiplier: Karmic Justice off!",
+  "deactivation.villainousdifficultymultipliers.aging": "Difficulty Multiplier: Aging off!",
+  "deactivation.villainousdifficultymultipliers.softskin": "Difficulty Multiplier: Soft Skin off!",
+  "deactivation.villainousdifficultymultipliers.fatigue": "Difficulty Multiplier: Fatigue off!",
+  "help.villainousdifficultymultipliers.listmultiplierslabel": "=-List of difficulty multipliers=-",
+  "help.villainousdifficultymultipliers.listmultipliers": "Black_Eye, Cannon, Famine, Venom, Shift, Karmic_Justice, aging, soft_skin, fatigue.",
+  "activation.villainousdifficultymultipliers.invalid": "Activation failed! Invalid multiplier!",
+  "deactivation.villainousdifficultymultipliers.invalid": "Deactivation failed! Invalid multiplier!"
+
+
+
+
+
+
+
+
+
+}
