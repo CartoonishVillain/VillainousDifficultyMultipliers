@@ -17,10 +17,18 @@
   "deactivation.villainousdifficultymultipliers.aging": "Difficulty Multiplier: Aging off!",
   "deactivation.villainousdifficultymultipliers.softskin": "Difficulty Multiplier: Soft Skin off!",
   "deactivation.villainousdifficultymultipliers.fatigue": "Difficulty Multiplier: Fatigue off!",
-  "help.villainousdifficultymultipliers.listmultiplierslabel": "=-List of difficulty multipliers=-",
-  "help.villainousdifficultymultipliers.listmultipliers": "Black_Eye, Cannon, Famine, Venom, Shift, Karmic_Justice, aging, soft_skin, fatigue.",
+  "error.villainousdifficultymultipliers.listmultipliers": "Run /vdm list for a list of available modifiers!",
   "activation.villainousdifficultymultipliers.invalid": "Activation failed! Invalid multiplier!",
-  "deactivation.villainousdifficultymultipliers.invalid": "Deactivation failed! Invalid multiplier!"
+  "deactivation.villainousdifficultymultipliers.invalid": "Deactivation failed! Invalid multiplier!",
+  "help.villainousdifficultymultipliers.help": "* /vdm help - shows a list of difficulty multiplier commands",
+  "help.villainousdifficultymultipliers.activate": "* /vdm activate <difficulty multiplier> - Activates a difficulty multiplier",
+  "help.villainousdifficultymultipliers.deactivate": "* /vdm deactivate <difficulty multiplier> - Deactivates a difficulty multiplier",
+  "help.villainousdifficultymultipliers.activelist": "* /vdm activelist - shows the list of currently active difficulty multipliers",
+  "help.villainousdifficultymultipliers.list": "* /vdm list - shows the list of all difficulty multipliers",
+  "help.villainousdifficultymultipliers.check": "* /vdm check <difficulty multiplier> - Describes which each multiplier does. Or if patchouli is installed, distributes the patchouli guide.",
+  "info.villainousdifficultymultipliers.none": "No difficulty Modifiers enabled!",
+  "info.villainousdifficultymultipiers.count": "%1$s Difficulty Modifiers enabled: ",
+  "info.villainousdifficultymodifiers.list": "Available difficulty modifiers: "
 
 
 

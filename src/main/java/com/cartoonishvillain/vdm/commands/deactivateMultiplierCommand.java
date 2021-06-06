@@ -1,5 +1,6 @@
-package com.cartoonishvillain.vdm.commands;
+package com.cartoonishvillain.vdm.Commands;
 
+import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -8,14 +9,24 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+
+import java.util.ArrayList;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 public class deactivateMultiplierCommand implements Command<CommandSource> {
     private static final deactivateMultiplierCommand CMD = new deactivateMultiplierCommand();
 
     public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher){
         return Commands.literal("deactivate")
-                .requires(cs -> cs.hasPermission(0))
+                .requires(cs -> cs.hasPermission(2))
                 .then(Commands.argument("multiplier", StringArgumentType.word()).executes(CMD)
                 );
     }
@@ -27,42 +38,53 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
         switch (newString){
             case "blackeye":
             case "black_eye":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blackeye"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blackeye"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setBlackEye(false);});
                 break;
             case "cannon":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.cannon"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.cannon"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setCannon(false);});
                 break;
             case "famine":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.famine"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.famine"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setFamine(false);});
                 break;
             case "venom":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.venom"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.venom"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setVenom(false);});
                 break;
             case "shift":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.shift"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.shift"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setShift(false);});
                 break;
             case "karmicjustice":
             case "karmic_justice":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.karmicjustice"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.karmicjustice"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setKarmicJustice(false);});
                 break;
             case "aging":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.aging"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.aging"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setAging(false);});
                 break;
             case "softskin":
             case "soft_skin":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.softskin"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.softskin"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setSoftSkin(false);});
                 break;
             case "fatigue":
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.fatigue"), false);
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.fatigue"));
+                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setFatigue(false);});
                 break;
             default:
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid"), false);
-                context.getSource().sendSuccess(new TranslationTextComponent("help.villainousdifficultymultipliers.listmultiplierslabel"), false);
-                context.getSource().sendSuccess(new TranslationTextComponent("help.villainousdifficultymultipliers.listmultipliers"), false);
-
+                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("error.villainousdifficultymultipliers.listmultipliers"), false);
                 break;
         }
 
         return 0;
+    }
+
+    private void broadcast(MinecraftServer server, TranslationTextComponent translationTextComponent){
+        server.getPlayerList().broadcastMessage(translationTextComponent, ChatType.CHAT, UUID.randomUUID());
     }
 }
