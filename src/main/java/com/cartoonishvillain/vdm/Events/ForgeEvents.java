@@ -1,5 +1,7 @@
 package com.cartoonishvillain.vdm.Events;
 
+import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapability;
+import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
@@ -7,10 +9,22 @@ import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityM
 import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
+import com.google.common.collect.Multimap;
 import net.minecraft.client.gui.screen.EditGamerulesScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
@@ -24,17 +38,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -42,6 +56,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Mod.EventBusSubscriber(modid = VDM.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -58,10 +73,18 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void worldRegiser(AttachCapabilitiesEvent<Entity> event){
+    public static void playerRegister(AttachCapabilitiesEvent<Entity> event){
         if(event.getObject() instanceof PlayerEntity){
             PlayerCapabilityManager provider = new PlayerCapabilityManager();
             event.addCapability(new ResourceLocation(VDM.MODID, "blackeyestatus"), provider);
+        }
+    }
+
+    @SubscribeEvent
+    public static void entityRegister(AttachCapabilitiesEvent<Entity> event){
+        if(event.getObject() instanceof AnimalEntity || event.getObject() instanceof VillagerEntity){
+            EntityCapabilityManager provider = new EntityCapabilityManager();
+            event.addCapability(new ResourceLocation(VDM.MODID, "entitycapabilities"), provider);
         }
     }
 
@@ -199,11 +222,11 @@ public class ForgeEvents {
         if(!event.getEntity().level.isClientSide()){
             if(event.getEntity() instanceof PlayerEntity){
                 PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
-                AtomicBoolean isSkullOn = new AtomicBoolean(false);
+                AtomicBoolean isMultiplierOn = new AtomicBoolean(false);
                 event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                    isSkullOn.set(h.getBlackEye());
+                    isMultiplierOn.set(h.getBlackEye());
                 });
-                if(isSkullOn.get()) {
+                if(isMultiplierOn.get()) {
                     playerEntity.getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
                         if(h.getBlackEyeStatus()){ //user has a black eye
                             event.setCanceled(true); //uses afflicted are unable to heal.
@@ -219,11 +242,11 @@ public class ForgeEvents {
     public static void BlackEyeApplication(LivingDamageEvent event){
         if(event.getEntityLiving() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide()){
             PlayerEntity playerEntity = (PlayerEntity) event.getEntityLiving();
-            AtomicBoolean isSkullOn = new AtomicBoolean(false);
+            AtomicBoolean isMultiplierOn = new AtomicBoolean(false);
             event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                isSkullOn.set(h.getBlackEye());
+                isMultiplierOn.set(h.getBlackEye());
             });
-            if(isSkullOn.get()){
+            if(isMultiplierOn.get()){
                 playerEntity.getCapability(PlayerCapability.INSTANCE).ifPresent(h->{
                     h.setBlackEyeStatus(true);
                 });
@@ -244,6 +267,107 @@ public class ForgeEvents {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void Venom(LivingDamageEvent event){
+        if(!event.getEntityLiving().level.isClientSide()) {
+            if (event.getSource().getEntity() instanceof LivingEntity && event.getSource().getEntity().getType() == EntityType.CAVE_SPIDER) {
+                event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
+                    if (h.getVenom()) {
+                        Difficulty level = event.getEntityLiving().level.getDifficulty();
+                        if (level == Difficulty.EASY) {
+                            event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 5 * 20, 0));
+                        } else if (level == Difficulty.NORMAL) {
+                            event.getEntityLiving().addEffect(new EffectInstance(Effects.WITHER, 2 * 20, 0));
+                        } else if (level == Difficulty.HARD) {
+                            event.getEntityLiving().addEffect(new EffectInstance(Effects.WITHER, 5 * 20, 0));
+                        }
+                    }
+                });
+            }
+            else if(event.getSource().getEntity() instanceof LivingEntity && event.getSource().getEntity().getType() == EntityType.SPIDER){
+                event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
+                    if (h.getVenom()) {
+                        Difficulty level = event.getEntityLiving().level.getDifficulty();
+                        if (level == Difficulty.EASY) {
+                            event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 2 * 20, 0));
+                        } else if (level == Difficulty.NORMAL) {
+                            event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 4 * 20, 0));
+                        } else if (level == Difficulty.HARD) {
+                            event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 6 * 20, 0));
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void Aging(BabyEntitySpawnEvent event){
+        if(!event.getParentA().level.isClientSide()){
+            AtomicBoolean isMultiplierOn = new AtomicBoolean(false);
+            event.getParentA().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
+                isMultiplierOn.set(h.getAging());
+            });
+            if(isMultiplierOn.get()){
+                AtomicInteger age = new AtomicInteger(0);
+                event.getParentA().getCapability(EntityCapability.INSTANCE).ifPresent(h->{
+                    h.setAge(h.getAge()+1);
+                    age.set(h.getAge());
+                });
+                agecheck(age.get(), event.getParentA());
+
+                age.set(0);
+                event.getParentB().getCapability(EntityCapability.INSTANCE).ifPresent(h->{
+                    h.setAge(h.getAge()+1);
+                    age.set(h.getAge());
+                });
+                agecheck(age.get(), event.getParentB());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void seedRetaliation(EntityJoinWorldEvent event){
+        Entity e = event.getEntity();
+        if (!e.level.isClientSide() && e instanceof LivingEntity){
+            EntityType eType = e.getType();
+            if(eType == EntityType.PIG || eType == EntityType.SHEEP || eType == EntityType.COW || eType == EntityType.MOOSHROOM || eType == EntityType.CHICKEN){
+                Random random = new Random();
+                int chance = random.nextInt(20);
+                if(chance <= 1) e.getCapability(EntityCapability.INSTANCE).ifPresent(h->{
+                    h.setRetaliationStatus(true);
+                });
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void Retaliate(LivingDamageEvent event){
+        if(!event.getEntityLiving().level.isClientSide() && event.getEntity() instanceof LivingEntity) {
+            EntityType eType = event.getEntityLiving().getType();
+            if (eType == EntityType.PIG || eType == EntityType.SHEEP || eType == EntityType.COW || eType == EntityType.MOOSHROOM || eType == EntityType.CHICKEN) {
+                AtomicBoolean isMultiplierOn = new AtomicBoolean(false);
+                event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
+                    isMultiplierOn.set(h.getKarmicJustice());
+                });
+                if (isMultiplierOn.get() && event.getSource().getEntity() instanceof PlayerEntity) {
+                    AtomicBoolean isExplodey = new AtomicBoolean(false);
+                    event.getEntityLiving().getCapability(EntityCapability.INSTANCE).ifPresent(h->{
+                        isExplodey.set(h.getRetaliationStatus());
+                    });
+                    if(isExplodey.get()) {
+                        event.getEntityLiving().level.explode(event.getEntityLiving(), event.getEntityLiving().getX(), event.getEntityLiving().getY(), event.getEntityLiving().getZ(), 2f, Explosion.Mode.NONE);
+                        event.getEntityLiving().remove();
+                    }
+                }
+            }
+        }
+    }
+
+    private static void agecheck(int age, LivingEntity livingEntity){
+        if(age >= 4) livingEntity.remove();
     }
 
 }
