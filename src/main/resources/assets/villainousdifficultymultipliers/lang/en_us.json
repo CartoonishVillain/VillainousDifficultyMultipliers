@@ -28,7 +28,8 @@
   "help.villainousdifficultymultipliers.check": "* /vdm check <difficulty multiplier> - Describes which each multiplier does. Or if patchouli is installed, distributes the patchouli guide.",
   "info.villainousdifficultymultipliers.none": "No difficulty Modifiers enabled!",
   "info.villainousdifficultymultipiers.count": "%1$s Difficulty Modifiers enabled: ",
-  "info.villainousdifficultymodifiers.list": "Available difficulty modifiers: "
+  "info.villainousdifficultymodifiers.list": "Available difficulty modifiers: ",
+  "death.attack.fatigue": "%1$s died of lack of sleep"
 
 
 
