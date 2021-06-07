@@ -5,8 +5,11 @@ import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityM
 import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.stats.ServerStatisticsManager;
@@ -14,18 +17,22 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.lang.reflect.Field;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = VDM.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -98,20 +105,76 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void FATIGUETEST(LivingEvent.LivingJumpEvent event){
-        if(event.getEntity() instanceof PlayerEntity && !event.getEntity().level.isClientSide()){
-            PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
-            playerEntity.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
+    public static void Cannon(LivingDeathEvent event){
+        if(!event.getEntityLiving().level.isClientSide()){
+            if(event.getEntityLiving() instanceof CreeperEntity){
+                CreeperEntity creeperEntity = (CreeperEntity) event.getEntityLiving();
+                creeperEntity.level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
+                    if(h.getCannon()){
+                        Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(creeperEntity.level, creeperEntity) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
+                        float f = creeperEntity.isPowered() ? 2.0F : 1.0F;
+                        creeperEntity.level.explode(creeperEntity, creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ(), (float)3 * f, explosion$mode);
+                        creeperEntity.remove();
+                    }
+                });
+            }
         }
     }
 
     @SubscribeEvent
-    public static void FATIGUETEST2(TickEvent.PlayerTickEvent event){
-        if(!event.player.level.isClientSide()){
-            if(event.player.isDiscrete()) event.player.awardStat(Stats.TIME_SINCE_REST, 1000);
-            ServerStatisticsManager serverstatisticsmanager = ((ServerPlayerEntity)event.player).getStats();
-            Integer sleeptime = MathHelper.clamp(serverstatisticsmanager.getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)), 1, Integer.MAX_VALUE);
-            event.player.displayClientMessage(new StringTextComponent(sleeptime.toString()), true);
+    public static void Shift(LivingEvent.LivingUpdateEvent event){
+        if(!event.getEntityLiving().level.isClientSide()){
+            event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
+                if(h.getShift()) {
+                    if (event.getEntityLiving().getType() == EntityType.ZOMBIE) {
+                        ZombieEntity entity = (ZombieEntity) event.getEntityLiving();
+                        Random random = new Random();
+                        Vector3d vector3d = entity.position();
+                        int chance = random.nextInt(13);
+                        if (chance > 6) {
+                            DrownedEntity newMob = new DrownedEntity(EntityType.DROWNED, entity.level);
+                            newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                            entity.level.addFreshEntity(newMob);
+                            entity.remove();
+                        } else if (chance >= 6 && chance < 11) {
+                            HuskEntity newMob = new HuskEntity(EntityType.HUSK, entity.level);
+                            newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                            entity.level.addFreshEntity(newMob);
+                            entity.remove();
+                        } else {
+                            ZombieVillagerEntity newMob = new ZombieVillagerEntity(EntityType.ZOMBIE_VILLAGER, entity.level);
+                            newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                            entity.level.addFreshEntity(newMob);
+                            entity.remove();
+                        }
+                    }
+                    if (event.getEntityLiving().getType() == EntityType.SKELETON) {
+                        SkeletonEntity entity = (SkeletonEntity) event.getEntityLiving();
+                        Vector3d vector3d = entity.position();
+                        StrayEntity newMob = new StrayEntity(EntityType.STRAY, entity.level);
+                        newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                        entity.level.addFreshEntity(newMob);
+                        entity.remove();
+                    }
+                    if (event.getEntityLiving().getType() == EntityType.CREEPER) {
+                        CreeperEntity creeperEntity = (CreeperEntity) event.getEntityLiving();
+                        if(creeperEntity.isPowered()){return;}
+                        else{
+                            try{
+                                Field field;
+                                field = creeperEntity.getClass().getDeclaredField("DATA_IS_POWERED");
+                                field.setAccessible(true);
+                                DataParameter<Boolean> powered = (DataParameter<Boolean>) field.get(creeperEntity);
+                                creeperEntity.getEntityData().set(powered, true);
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            } catch (NoSuchFieldException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 }
