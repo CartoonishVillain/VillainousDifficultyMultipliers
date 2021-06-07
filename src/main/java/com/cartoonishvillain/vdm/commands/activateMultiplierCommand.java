@@ -41,10 +41,6 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.cannon"));
                 context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setCannon(true);});
                 break;
-            case "famine":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.famine"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setFamine(true);});
-                break;
             case "venom":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.venom"));
                 context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setVenom(true);});

@@ -22,13 +22,12 @@ public class WorldCapability {
                 CompoundNBT tag = new CompoundNBT();
                 tag.putBoolean("blackeye", instance.getBlackEye());
                 tag.putBoolean("cannon", instance.getCannon());
-                tag.putBoolean("famine", instance.getFamine());
                 tag.putBoolean("venom", instance.getVenom());
                 tag.putBoolean("shift", instance.getShift());
                 tag.putBoolean("karmicjustice", instance.getKarmicJustice());
                 tag.putBoolean("aging", instance.getAging());
                 tag.putBoolean("softskin", instance.getSoftSkin());
-                tag.putBoolean("fatigue", instance.getFamine());
+                tag.putBoolean("fatigue", instance.getFatigue());
                 return tag;
             }
 
@@ -38,7 +37,6 @@ public class WorldCapability {
                 instance.setAging(tag.getBoolean("aging"));
                 instance.setBlackEye(tag.getBoolean("blackeye"));
                 instance.setCannon(tag.getBoolean("cannon"));
-                instance.setFamine(tag.getBoolean("famine"));
                 instance.setFatigue(tag.getBoolean("fatigue"));
                 instance.setKarmicJustice(tag.getBoolean("karmicjustice"));
                 instance.setShift(tag.getBoolean("shift"));

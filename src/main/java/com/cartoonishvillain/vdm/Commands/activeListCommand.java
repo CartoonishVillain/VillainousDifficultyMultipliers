@@ -35,7 +35,6 @@ public class activeListCommand implements Command<CommandSource> {
             if(h.getBlackEye()) {string.set(string.get() + "Black Eye, "); count.set(count.get()+1);}
             if(h.getCannon()) {string.set(string.get() + "Cannon, "); count.set(count.get()+1);}
             if(h.getAging()) {string.set(string.get() + "Aging, "); count.set(count.get()+1);}
-            if(h.getFamine()) {string.set(string.get() + "Famine, "); count.set(count.get()+1);}
             if(h.getFatigue()) {string.set(string.get() + "Fatigue, "); count.set(count.get()+1);}
             if(h.getKarmicJustice()) {string.set(string.get() + "Karmic Justice, "); count.set(count.get()+1);}
             if(h.getShift()) {string.set(string.get() + "Shift, "); count.set(count.get()+1);}

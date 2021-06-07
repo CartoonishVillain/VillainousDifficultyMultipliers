@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
 public class WorldCapabilityManager implements IWorldCapbilityManager, ICapabilityProvider, INBTSerializable<CompoundNBT> {
     protected Boolean blackeye = false;
     protected Boolean cannon = false;
-    protected Boolean famine = false;
     protected Boolean venom = false;
     protected Boolean shift = false;
     protected Boolean karmicjustice = false;
@@ -31,10 +30,6 @@ public class WorldCapabilityManager implements IWorldCapbilityManager, ICapabili
         return cannon;
     }
 
-    @Override
-    public boolean getFamine() {
-        return famine;
-    }
 
     @Override
     public boolean getVenom() {
@@ -74,11 +69,6 @@ public class WorldCapabilityManager implements IWorldCapbilityManager, ICapabili
     @Override
     public void setCannon(boolean set) {
         cannon = set;
-    }
-
-    @Override
-    public void setFamine(boolean set) {
-        famine = set;
     }
 
     @Override
@@ -123,7 +113,6 @@ public class WorldCapabilityManager implements IWorldCapbilityManager, ICapabili
         CompoundNBT tag = new CompoundNBT();
         tag.putBoolean("blackeye", blackeye);
         tag.putBoolean("cannon", cannon);
-        tag.putBoolean("famine", famine);
         tag.putBoolean("venom", venom);
         tag.putBoolean("shift", shift);
         tag.putBoolean("karmicjustice", karmicjustice);
@@ -137,7 +126,6 @@ public class WorldCapabilityManager implements IWorldCapbilityManager, ICapabili
     public void deserializeNBT(CompoundNBT nbt) {
         blackeye = nbt.getBoolean("blackeye");
         cannon = nbt.getBoolean("cannon");
-        famine = nbt.getBoolean("famine");
         venom = nbt.getBoolean("venom");
         shift = nbt.getBoolean("shift");
         karmicjustice = nbt.getBoolean("karmicjustice");

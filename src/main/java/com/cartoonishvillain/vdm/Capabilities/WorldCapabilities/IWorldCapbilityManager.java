@@ -3,7 +3,6 @@ package com.cartoonishvillain.vdm.Capabilities.WorldCapabilities;
 public interface IWorldCapbilityManager {
     boolean getBlackEye();
     boolean getCannon();
-    boolean getFamine();
     boolean getVenom();
     boolean getShift();
     boolean getKarmicJustice();
@@ -12,7 +11,6 @@ public interface IWorldCapbilityManager {
     boolean getFatigue();
     void setBlackEye(boolean set);
     void setCannon(boolean set);
-    void setFamine(boolean set);
     void setVenom(boolean set);
     void setShift(boolean set);
     void setKarmicJustice(boolean set);

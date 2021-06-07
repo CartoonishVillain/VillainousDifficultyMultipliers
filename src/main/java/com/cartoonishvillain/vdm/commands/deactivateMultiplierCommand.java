@@ -45,10 +45,6 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.cannon"));
                 context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setCannon(false);});
                 break;
-            case "famine":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.famine"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setFamine(false);});
-                break;
             case "venom":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.venom"));
                 context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setVenom(false);});
