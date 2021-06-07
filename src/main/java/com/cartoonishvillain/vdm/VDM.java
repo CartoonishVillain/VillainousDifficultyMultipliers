@@ -1,5 +1,6 @@
 package com.cartoonishvillain.vdm;
 
+import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,7 +38,8 @@ public class VDM
     }
 
     private void setup(final FMLCommonSetupEvent event)
-    {WorldCapability.register();}
+    {WorldCapability.register();
+     PlayerCapability.register();}
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client

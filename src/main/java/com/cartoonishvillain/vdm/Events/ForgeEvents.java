@@ -1,10 +1,14 @@
 package com.cartoonishvillain.vdm.Events;
 
+import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
+import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityManager;
 import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
+import net.minecraft.client.gui.screen.EditGamerulesScreen;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,12 +18,14 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.stats.ServerStatisticsManager;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -27,6 +33,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,6 +41,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.lang.reflect.Field;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Mod.EventBusSubscriber(modid = VDM.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -47,6 +55,14 @@ public class ForgeEvents {
     public static void worldRegister(AttachCapabilitiesEvent<World> event){
         WorldCapabilityManager provider = new WorldCapabilityManager();
         event.addCapability(new ResourceLocation(VDM.MODID, "multipliersenabled"), provider);
+    }
+
+    @SubscribeEvent
+    public static void worldRegiser(AttachCapabilitiesEvent<Entity> event){
+        if(event.getObject() instanceof PlayerEntity){
+            PlayerCapabilityManager provider = new PlayerCapabilityManager();
+            event.addCapability(new ResourceLocation(VDM.MODID, "blackeyestatus"), provider);
+        }
     }
 
     @SubscribeEvent
@@ -177,4 +193,57 @@ public class ForgeEvents {
             });
         }
     }
+
+    @SubscribeEvent
+    public static void BlackEye(LivingHealEvent event){
+        if(!event.getEntity().level.isClientSide()){
+            if(event.getEntity() instanceof PlayerEntity){
+                PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
+                AtomicBoolean isSkullOn = new AtomicBoolean(false);
+                event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
+                    isSkullOn.set(h.getBlackEye());
+                });
+                if(isSkullOn.get()) {
+                    playerEntity.getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
+                        if(h.getBlackEyeStatus()){ //user has a black eye
+                            event.setCanceled(true); //uses afflicted are unable to heal.
+                        }
+                    });
+                }
+            }
+
+        }
+    }
+
+    @SubscribeEvent
+    public static void BlackEyeApplication(LivingDamageEvent event){
+        if(event.getEntityLiving() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide()){
+            PlayerEntity playerEntity = (PlayerEntity) event.getEntityLiving();
+            AtomicBoolean isSkullOn = new AtomicBoolean(false);
+            event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
+                isSkullOn.set(h.getBlackEye());
+            });
+            if(isSkullOn.get()){
+                playerEntity.getCapability(PlayerCapability.INSTANCE).ifPresent(h->{
+                    h.setBlackEyeStatus(true);
+                });
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void BlackEyeRemoval(LivingDamageEvent event){
+        if(event.getSource().getEntity() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide()){
+            PlayerEntity aggressor = (PlayerEntity) event.getSource().getEntity();
+            DamageSource damageSource = event.getSource();
+            if(!damageSource.isExplosion() && !damageSource.isFire() && !damageSource.isMagic() && !damageSource.isProjectile() && aggressor != event.getEntityLiving()) {//damage source is (probably) melee
+                if (event.getEntityLiving() instanceof MonsterEntity || event.getEntityLiving() instanceof PlayerEntity) {
+                    aggressor.getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
+                        h.setBlackEyeStatus(false);
+                    });
+                }
+            }
+        }
+    }
+
 }
