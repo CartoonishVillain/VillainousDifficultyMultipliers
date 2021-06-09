@@ -52,6 +52,7 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 import java.util.Random;
@@ -169,13 +170,13 @@ public class ForgeEvents {
                         ZombieEntity entity = (ZombieEntity) event.getEntityLiving();
                         Random random = new Random();
                         Vector3d vector3d = entity.position();
-                        int chance = random.nextInt(13);
-                        if (chance > 6) {
+                        int chance = random.nextInt(12);
+                        if (chance < 6) {
                             DrownedEntity newMob = new DrownedEntity(EntityType.DROWNED, entity.level);
                             newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
                             entity.level.addFreshEntity(newMob);
                             entity.remove();
-                        } else if (chance >= 6 && chance < 11) {
+                        } else if (chance < 11) {
                             HuskEntity newMob = new HuskEntity(EntityType.HUSK, entity.level);
                             newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
                             entity.level.addFreshEntity(newMob);
@@ -199,15 +200,9 @@ public class ForgeEvents {
                         CreeperEntity creeperEntity = (CreeperEntity) event.getEntityLiving();
                         if(creeperEntity.isPowered()){return;}
                         else{
-                            try{
-                                Field field;
-                                field = creeperEntity.getClass().getDeclaredField("DATA_IS_POWERED");
-                                field.setAccessible(true);
-                                DataParameter<Boolean> powered = (DataParameter<Boolean>) field.get(creeperEntity);
-                                creeperEntity.getEntityData().set(powered, true);
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            } catch (NoSuchFieldException e) {
+                            try {
+                                creeperEntity.getEntityData().set(ObfuscationReflectionHelper.getPrivateValue(CreeperEntity.class, creeperEntity, "field_184714_b"), true);
+                            }catch (NullPointerException e){
                                 e.printStackTrace();
                             }
                         }

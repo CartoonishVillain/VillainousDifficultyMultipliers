@@ -29,14 +29,14 @@ displayName="Villainous Difficulty Multipliers" #mandatory
 # A file name (in the root of the mod JAR) containing a logo for display
 #logoFile="examplemod.png" #optional
 # A text field displayed in the mod UI
-credits="Stuff and things" #optional
+credits="Microsoft, Bungie, and 343 Industries for the idea." #optional
 # A text field displayed in the mod UI
 authors="Cartoonish Villain" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Villainous Difficulty Multipliers adds ways to make the game more or less challenging in a configurable manner. This is inspired by Halo's skull system, and I'm sure some of the difficulty modifiers are recognizable from that system too.
+Villainous Difficulty Multipliers adds ways to make the game more or (in the future probably) less challenging in a configurable manner. This is inspired by Halo's skull system, and I'm sure some of the difficulty modifiers are recognizable from that system too.
 
-Can you beat the game with all of the harder modifiers in hardcore? Probably with enough effort.
+Can you beat the game with all of the harder modifiers in hardcore? Probably with enough effort. It can't be that bad... right? We've all seen worse after all.
 
 Good luck :)
 '''

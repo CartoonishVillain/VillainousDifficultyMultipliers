@@ -28,10 +28,9 @@ public class listCommand implements Command<CommandSource> {
 
     @Override
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymodifiers.list").withStyle(TextFormatting.YELLOW, TextFormatting.BOLD), false);
+        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.list").withStyle(TextFormatting.YELLOW, TextFormatting.BOLD), false);
         context.getSource().sendSuccess(new StringTextComponent("Black Eye, Cannon, Aging, Fatigue, Karmic Justice, Shift, Soft Skin, Venom"), false);
-
-
+        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.heroic"), false);
         return 0;
     }
 }
