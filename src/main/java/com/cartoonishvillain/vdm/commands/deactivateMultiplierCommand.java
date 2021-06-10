@@ -1,6 +1,8 @@
 package com.cartoonishvillain.vdm.Commands;
 
-import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
+
+import com.cartoonishvillain.vdm.Configs.ServerConfig;
+import com.cartoonishvillain.vdm.VDM;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -35,53 +37,62 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
     @Override
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         String newString = context.getArgument("multiplier", String.class);
+        ServerConfig config = VDM.config;
         newString = newString.toLowerCase();
         switch (newString){
             case "blackeye":
             case "black_eye":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blackeye"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setBlackEye(false);});
+                while (config.BLACKEYE.get()){
+                VDM.config.BLACKEYE.set(false);}
                 break;
             case "cannon":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.cannon"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setCannon(false);});
-                break;
+                while (config.CANNON.get()){
+                VDM.config.CANNON.set(false);}
             case "venom":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.venom"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setVenom(false);});
+                while (config.VENOM.get()){
+                VDM.config.VENOM.set(false);}
                 break;
             case "shift":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.shift"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setShift(false);});
+                while (config.SHIFT.get()){
+                VDM.config.SHIFT.set(false);}
                 break;
             case "karmicjustice":
             case "karmic_justice":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.karmicjustice"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setKarmicJustice(false);});
+                while (config.KARMICJUSTICE.get()){
+                VDM.config.KARMICJUSTICE.set(false);}
                 break;
             case "aging":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.aging"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setAging(false);});
+                while (config.AGING.get()){
+                VDM.config.AGING.set(false);}
                 break;
             case "softskin":
             case "soft_skin":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.softskin"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setSoftSkin(false);});
+                while (config.SOFTSKIN.get()){
+                VDM.config.SOFTSKIN.set(false);}
                 break;
             case "fatigue":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.fatigue"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setFatigue(false);});
+                while (config.FATIGUE.get()){
+                VDM.config.FATIGUE.set(false);}
                 break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setBlackEye(false);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setCannon(false);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setVenom(false);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setShift(false);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setKarmicJustice(false);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setAging(false);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setSoftSkin(false);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setFatigue(false);});
+                while (config.AGING.get() || config.BLACKEYE.get() || config.CANNON.get() || config.FATIGUE.get() || config.KARMICJUSTICE.get() || config.SHIFT.get() || config.SOFTSKIN.get() || config.VENOM.get()){
+                VDM.config.BLACKEYE.set(false);
+                VDM.config.CANNON.set(false);
+                VDM.config.VENOM.set(false);
+                VDM.config.SHIFT.set(false);
+                VDM.config.KARMICJUSTICE.set(false);
+                VDM.config.AGING.set(false);
+                VDM.config.SOFTSKIN.set(false);
+                VDM.config.FATIGUE.set(false);}
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

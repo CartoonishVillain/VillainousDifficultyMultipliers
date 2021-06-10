@@ -1,6 +1,5 @@
 package com.cartoonishvillain.vdm.Commands;
 
-import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -11,9 +10,6 @@ import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class listCommand implements Command<CommandSource> {
     private static final listCommand CMD = new listCommand();

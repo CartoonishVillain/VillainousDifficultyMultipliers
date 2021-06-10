@@ -29,7 +29,7 @@ displayName="Villainous Difficulty Multipliers" #mandatory
 # A file name (in the root of the mod JAR) containing a logo for display
 #logoFile="examplemod.png" #optional
 # A text field displayed in the mod UI
-credits="Microsoft, Bungie, and 343 Industries for the idea." #optional
+credits="Microsoft, Bungie, and 343 Industries for the idea. Commoble for their confighelper as well." #optional
 # A text field displayed in the mod UI
 authors="Cartoonish Villain" #optional
 # The description text for the mod (multi line!) (#mandatory)

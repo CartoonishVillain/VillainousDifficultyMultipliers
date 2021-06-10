@@ -1,6 +1,7 @@
 package com.cartoonishvillain.vdm.Commands;
 
-import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
+import com.cartoonishvillain.vdm.Configs.ServerConfig;
+import com.cartoonishvillain.vdm.VDM;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -10,7 +11,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.UUID;
 
@@ -28,53 +32,63 @@ public class activateMultiplierCommand implements Command<CommandSource> {
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         String newString = context.getArgument("multiplier", String.class);
         newString = newString.toLowerCase();
+        ServerConfig config = VDM.config;
         switch (newString){
             case "blackeye":
             case "black_eye":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.blackeye"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setBlackEye(true);});
+                while (!config.BLACKEYE.get()){
+                VDM.config.BLACKEYE.set(true);}
                 break;
             case "cannon":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.cannon"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setCannon(true);});
+                while (!config.CANNON.get()){
+                VDM.config.CANNON.set(true);}
                 break;
             case "venom":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.venom"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setVenom(true);});
+                while (!config.VENOM.get()){
+                VDM.config.VENOM.set(true);}
                 break;
             case "shift":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.shift"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setShift(true);});
+                while (!config.SHIFT.get()){
+                VDM.config.SHIFT.set(true);}
                 break;
             case "karmicjustice":
             case "karmic_justice":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.karmicjustice"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setKarmicJustice(true);});
+                while(!config.KARMICJUSTICE.get()){
+                VDM.config.KARMICJUSTICE.set(true);}
                 break;
             case "aging":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.aging"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setAging(true);});
+                while (!config.AGING.get()){
+                VDM.config.AGING.set(true);}
                 break;
             case "softskin":
             case "soft_skin":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.softskin"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setSoftSkin(true);});
+                while (!config.SOFTSKIN.get()){
+                VDM.config.SOFTSKIN.set(true);}
                 break;
             case "fatigue":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.fatigue"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setFatigue(true);});
+                while (!config.FATIGUE.get()){
+                VDM.config.FATIGUE.set(true);}
                 break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allwarning").withStyle(TextFormatting.RED, TextFormatting.BOLD));
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allon"));
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setBlackEye(true);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setCannon(true);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setVenom(true);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setShift(true);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setKarmicJustice(true);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setAging(true);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setSoftSkin(true);});
-                context.getSource().getLevel().getCapability(WorldCapability.INSTANCE).ifPresent(h->{h.setFatigue(true);});
+                while(!(config.AGING.get() && config.BLACKEYE.get() && config.CANNON.get() && config.FATIGUE.get() && config.KARMICJUSTICE.get() && config.SHIFT.get() && config.SOFTSKIN.get() && config.VENOM.get())){
+                VDM.config.BLACKEYE.set(true);
+                VDM.config.CANNON.set(true);
+                VDM.config.VENOM.set(true);
+                VDM.config.SHIFT.set(true);
+                VDM.config.KARMICJUSTICE.set(true);
+                VDM.config.AGING.set(true);
+                VDM.config.SOFTSKIN.set(true);
+                VDM.config.FATIGUE.set(true);}
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("activation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

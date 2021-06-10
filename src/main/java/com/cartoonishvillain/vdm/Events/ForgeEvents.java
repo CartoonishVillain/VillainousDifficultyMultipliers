@@ -4,57 +4,36 @@ import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapabilit
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
-import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
-import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityManager;
+import com.cartoonishvillain.vdm.Commands.CommandManager;
 import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
-import com.cartoonishvillain.vdm.Commands.CommandManager;
-import com.google.common.collect.Multimap;
-import net.minecraft.client.gui.screen.EditGamerulesScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.stats.ServerStatisticsManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,12 +44,6 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void serverLoad(RegisterCommandsEvent event){
         CommandManager.register(event.getDispatcher());
-    }
-
-    @SubscribeEvent
-    public static void worldRegister(AttachCapabilitiesEvent<World> event){
-        WorldCapabilityManager provider = new WorldCapabilityManager();
-        event.addCapability(new ResourceLocation(VDM.MODID, "multipliersenabled"), provider);
     }
 
     @SubscribeEvent
@@ -93,9 +66,7 @@ public class ForgeEvents {
     public static void SoftSkin(LivingDamageEvent event){
         if(event.getEntityLiving() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide()){
             PlayerEntity target = (PlayerEntity) event.getEntityLiving();
-            event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                if(h.getSoftSkin()){event.setAmount(event.getAmount() * 1.5f);}
-            });
+                if(VDM.config.SOFTSKIN.get()){event.setAmount(event.getAmount() * 1.5f);}
         }
     }
 
@@ -103,8 +74,7 @@ public class ForgeEvents {
     public static void Fatigue(TickEvent.PlayerTickEvent event){
         PlayerEntity playerEntity = event.player;
         if(!playerEntity.level.isClientSide()){
-            playerEntity.level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                if(h.getFatigue()){
+                if(VDM.config.FATIGUE.get()){
                     ServerStatisticsManager serverstatisticsmanager = ((ServerPlayerEntity)playerEntity).getStats();
                     int sleeptime = MathHelper.clamp(serverstatisticsmanager.getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)), 1, Integer.MAX_VALUE);
                     Random random = new Random();
@@ -139,7 +109,6 @@ public class ForgeEvents {
                         if (chance < 49000) playerEntity.hurt(Fatiguedamage.causeFatigueDamage(playerEntity), 1);
                     }
                 }
-            });
 
         }
     }
@@ -149,14 +118,12 @@ public class ForgeEvents {
         if(!event.getEntityLiving().level.isClientSide()){
             if(event.getEntityLiving() instanceof CreeperEntity){
                 CreeperEntity creeperEntity = (CreeperEntity) event.getEntityLiving();
-                creeperEntity.level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                    if(h.getCannon()){
+                    if(VDM.config.CANNON.get()){
                         Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(creeperEntity.level, creeperEntity) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
                         float f = creeperEntity.isPowered() ? 2.0F : 1.0F;
                         creeperEntity.level.explode(creeperEntity, creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ(), (float)3 * f, explosion$mode);
                         creeperEntity.remove();
                     }
-                });
             }
         }
     }
@@ -164,8 +131,7 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void Shift(LivingEvent.LivingUpdateEvent event){
         if(!event.getEntityLiving().level.isClientSide()){
-            event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                if(h.getShift()) {
+                if(VDM.config.SHIFT.get()) {
                     if (event.getEntityLiving().getType() == EntityType.ZOMBIE) {
                         ZombieEntity entity = (ZombieEntity) event.getEntityLiving();
                         Random random = new Random();
@@ -208,7 +174,6 @@ public class ForgeEvents {
                         }
                     }
                 }
-            });
         }
     }
 
@@ -217,11 +182,7 @@ public class ForgeEvents {
         if(!event.getEntity().level.isClientSide()){
             if(event.getEntity() instanceof PlayerEntity){
                 PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
-                AtomicBoolean isMultiplierOn = new AtomicBoolean(false);
-                event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                    isMultiplierOn.set(h.getBlackEye());
-                });
-                if(isMultiplierOn.get()) {
+                if(VDM.config.BLACKEYE.get()) {
                     playerEntity.getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
                         if(h.getBlackEyeStatus()){ //user has a black eye
                             event.setCanceled(true); //uses afflicted are unable to heal.
@@ -237,11 +198,7 @@ public class ForgeEvents {
     public static void BlackEyeApplication(LivingDamageEvent event){
         if(event.getEntityLiving() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide()){
             PlayerEntity playerEntity = (PlayerEntity) event.getEntityLiving();
-            AtomicBoolean isMultiplierOn = new AtomicBoolean(false);
-            event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                isMultiplierOn.set(h.getBlackEye());
-            });
-            if(isMultiplierOn.get()){
+            if(VDM.config.BLACKEYE.get()){
                 playerEntity.getCapability(PlayerCapability.INSTANCE).ifPresent(h->{
                     h.setBlackEyeStatus(true);
                 });
@@ -268,8 +225,7 @@ public class ForgeEvents {
     public static void Venom(LivingDamageEvent event){
         if(!event.getEntityLiving().level.isClientSide()) {
             if (event.getSource().getEntity() instanceof LivingEntity && event.getSource().getEntity().getType() == EntityType.CAVE_SPIDER) {
-                event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
-                    if (h.getVenom()) {
+                    if (VDM.config.VENOM.get()) {
                         Difficulty level = event.getEntityLiving().level.getDifficulty();
                         if (level == Difficulty.EASY) {
                             event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 5 * 20, 0));
@@ -279,11 +235,9 @@ public class ForgeEvents {
                             event.getEntityLiving().addEffect(new EffectInstance(Effects.WITHER, 5 * 20, 0));
                         }
                     }
-                });
             }
             else if(event.getSource().getEntity() instanceof LivingEntity && event.getSource().getEntity().getType() == EntityType.SPIDER){
-                event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
-                    if (h.getVenom()) {
+                    if (VDM.config.VENOM.get()) {
                         Difficulty level = event.getEntityLiving().level.getDifficulty();
                         if (level == Difficulty.EASY) {
                             event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 2 * 20, 0));
@@ -293,7 +247,6 @@ public class ForgeEvents {
                             event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 6 * 20, 0));
                         }
                     }
-                });
             }
         }
     }
@@ -301,11 +254,7 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void Aging(BabyEntitySpawnEvent event){
         if(!event.getParentA().level.isClientSide()){
-            AtomicBoolean isMultiplierOn = new AtomicBoolean(false);
-            event.getParentA().level.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
-                isMultiplierOn.set(h.getAging());
-            });
-            if(isMultiplierOn.get()){
+            if(VDM.config.AGING.get()){
                 AtomicInteger age = new AtomicInteger(0);
                 event.getParentA().getCapability(EntityCapability.INSTANCE).ifPresent(h->{
                     h.setAge(h.getAge()+1);
@@ -343,11 +292,7 @@ public class ForgeEvents {
         if(!event.getEntityLiving().level.isClientSide() && event.getEntity() instanceof LivingEntity) {
             EntityType eType = event.getEntityLiving().getType();
             if (eType == EntityType.PIG || eType == EntityType.SHEEP || eType == EntityType.COW || eType == EntityType.MOOSHROOM || eType == EntityType.CHICKEN) {
-                AtomicBoolean isMultiplierOn = new AtomicBoolean(false);
-                event.getEntityLiving().level.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
-                    isMultiplierOn.set(h.getKarmicJustice());
-                });
-                if (isMultiplierOn.get() && event.getSource().getEntity() instanceof PlayerEntity) {
+                if (VDM.config.KARMICJUSTICE.get() && event.getSource().getEntity() instanceof PlayerEntity) {
                     AtomicBoolean isExplodey = new AtomicBoolean(false);
                     event.getEntityLiving().getCapability(EntityCapability.INSTANCE).ifPresent(h->{
                         isExplodey.set(h.getRetaliationStatus());

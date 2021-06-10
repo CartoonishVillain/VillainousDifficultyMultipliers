@@ -2,12 +2,14 @@ package com.cartoonishvillain.vdm;
 
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapability;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
-import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
+import com.cartoonishvillain.vdm.Configs.ConfigHelper;
+import com.cartoonishvillain.vdm.Configs.ServerConfig;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
@@ -24,8 +26,10 @@ public class VDM
     public static final String MODID = "villainousdifficultymultipliers";
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
+    public static ServerConfig config;
 
     public VDM() {
+        config = ConfigHelper.register(ModConfig.Type.SERVER, ServerConfig::new);
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
@@ -39,7 +43,7 @@ public class VDM
     }
 
     private void setup(final FMLCommonSetupEvent event)
-    {WorldCapability.register();
+    {
      PlayerCapability.register();
         EntityCapability.register();
     }
