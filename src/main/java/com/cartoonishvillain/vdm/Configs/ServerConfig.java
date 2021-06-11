@@ -14,6 +14,7 @@ public class ServerConfig {
     public ConfigHelper.ConfigValueListener<Boolean> SHIFT;
     public ConfigHelper.ConfigValueListener<Boolean> SOFTSKIN;
     public ConfigHelper.ConfigValueListener<Boolean> VENOM;
+    public ConfigHelper.ConfigValueListener<Boolean> HARDENED;
 
     public ServerConfig(ForgeConfigSpec.Builder builder, ConfigHelper.Subscriber subscriber){
         builder.comment("Enable or Disable Difficulty Increasing Multipliers. True is activated, False is deactivated").push(SCATEGORY_DIFFICULTY_INCREASING);
@@ -25,6 +26,7 @@ public class ServerConfig {
         this.SHIFT = subscriber.subscribe(builder.comment("Fighting the same zombies gets old. Zombies are converted to drowned, husks, or zombie villagers instantly, skeletons are converted to strays instantly, and creepers are always supercharged.").define("shiftMultiplier", false));
         this.SOFTSKIN = subscriber.subscribe(builder.comment("Your particularly soft skin makes you more vulnerable to damage. All incoming damage has an extra 50% added to it.").define("softSkinMultiplier", false));
         this.VENOM = subscriber.subscribe(builder.comment("Cave spiders inflict poison for a brief moment on easy, and both wither and poison on normal and hard. Spiders also get the ability to poison you for a shorter amount of time.").define("venomMultiplier", false));
+        this.HARDENED = subscriber.subscribe(builder.comment("All hostile mobs have increased health").define("hardenedMultiplier", false));
         builder.pop();
     }
 

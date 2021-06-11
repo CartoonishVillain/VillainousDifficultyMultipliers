@@ -63,6 +63,10 @@ public class checkMultiplierCommand implements Command<CommandSource> {
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Fatigue=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.fatigue"), false);
                 break;
+            case "hardened":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Hardened=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.hardened"), false);
+                break;
             case "heroic":
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Heroic=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.heroic"), false);

@@ -77,10 +77,15 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 while (!config.FATIGUE.get()){
                 VDM.config.FATIGUE.set(true);}
                 break;
+            case "hardened":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.hardened"));
+                while (!config.HARDENED.get()){
+                    VDM.config.HARDENED.set(true);}
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allwarning").withStyle(TextFormatting.RED, TextFormatting.BOLD));
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allon"));
-                while(!(config.AGING.get() && config.BLACKEYE.get() && config.CANNON.get() && config.FATIGUE.get() && config.KARMICJUSTICE.get() && config.SHIFT.get() && config.SOFTSKIN.get() && config.VENOM.get())){
+                while(!(config.AGING.get() && config.BLACKEYE.get() && config.CANNON.get() && config.FATIGUE.get() && config.KARMICJUSTICE.get() && config.SHIFT.get() && config.SOFTSKIN.get() && config.VENOM.get() && config.HARDENED.get())){
                 VDM.config.BLACKEYE.set(true);
                 VDM.config.CANNON.set(true);
                 VDM.config.VENOM.set(true);
@@ -88,7 +93,8 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.KARMICJUSTICE.set(true);
                 VDM.config.AGING.set(true);
                 VDM.config.SOFTSKIN.set(true);
-                VDM.config.FATIGUE.set(true);}
+                VDM.config.FATIGUE.set(true);
+                VDM.config.HARDENED.set(true);}
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("activation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

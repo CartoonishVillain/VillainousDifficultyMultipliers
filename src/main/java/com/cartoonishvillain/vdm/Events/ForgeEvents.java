@@ -13,6 +13,9 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
@@ -21,6 +24,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -29,6 +33,7 @@ import net.minecraft.potion.Effects;
 import net.minecraft.stats.ServerStatisticsManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -38,15 +43,15 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -191,41 +196,76 @@ public class ForgeEvents {
     }
 
     @SubscribeEvent
-    public static void Shift(LivingEvent.LivingUpdateEvent event){
-        if(!event.getEntityLiving().level.isClientSide()){
+    public static void Shift(EntityJoinWorldEvent event){
+        if(!event.getEntity().level.isClientSide()){
                 if(VDM.config.SHIFT.get()) {
-                    if (event.getEntityLiving().getType() == EntityType.ZOMBIE) {
-                        ZombieEntity entity = (ZombieEntity) event.getEntityLiving();
+                    if (event.getEntity().getType() == EntityType.ZOMBIE) {
+                        ZombieEntity entity = (ZombieEntity) event.getEntity();
                         Random random = new Random();
                         Vector3d vector3d = entity.position();
+
+                        ItemStack mainHand = entity.getItemInHand(Hand.MAIN_HAND);
+                        ItemStack offHand = entity.getItemInHand(Hand.OFF_HAND);
+                        ItemStack Helm = entity.getItemBySlot(EquipmentSlotType.HEAD);
+                        ItemStack Chest = entity.getItemBySlot(EquipmentSlotType.CHEST);
+                        ItemStack Leg = entity.getItemBySlot(EquipmentSlotType.LEGS);
+                        ItemStack Boots = entity.getItemBySlot(EquipmentSlotType.FEET);
+
                         int chance = random.nextInt(12);
                         if (chance < 6) {
                             DrownedEntity newMob = new DrownedEntity(EntityType.DROWNED, entity.level);
                             newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                            newMob.setItemInHand(Hand.MAIN_HAND, mainHand);
+                            newMob.setItemInHand(Hand.OFF_HAND, offHand);
+                            newMob.setItemSlot(EquipmentSlotType.HEAD, Helm);
+                            newMob.setItemSlot(EquipmentSlotType.CHEST, Chest);
+                            newMob.setItemSlot(EquipmentSlotType.LEGS, Leg);
+                            newMob.setItemSlot(EquipmentSlotType.FEET, Boots);
                             entity.level.addFreshEntity(newMob);
-                            entity.remove();
+                            entity.setPos(entity.getX(), -1, entity.getZ());
+                            entity.kill();
                         } else if (chance < 11) {
                             HuskEntity newMob = new HuskEntity(EntityType.HUSK, entity.level);
                             newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
                             entity.level.addFreshEntity(newMob);
-                            entity.remove();
+                            entity.setPos(entity.getX(), -1, entity.getZ());
+                            entity.kill();
                         } else {
                             ZombieVillagerEntity newMob = new ZombieVillagerEntity(EntityType.ZOMBIE_VILLAGER, entity.level);
                             newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
                             entity.level.addFreshEntity(newMob);
-                            entity.remove();
+                            entity.setPos(entity.getX(), -1, entity.getZ());
+                            entity.kill();
                         }
                     }
-                    if (event.getEntityLiving().getType() == EntityType.SKELETON) {
-                        SkeletonEntity entity = (SkeletonEntity) event.getEntityLiving();
+                    if (event.getEntity().getType() == EntityType.SKELETON) {
+                        SkeletonEntity entity = (SkeletonEntity) event.getEntity();
                         Vector3d vector3d = entity.position();
+
+                        ItemStack mainHand = entity.getItemInHand(Hand.MAIN_HAND);
+                        ItemStack offHand = entity.getItemInHand(Hand.OFF_HAND);
+                        ItemStack Helm = entity.getItemBySlot(EquipmentSlotType.HEAD);
+                        ItemStack Chest = entity.getItemBySlot(EquipmentSlotType.CHEST);
+                        ItemStack Leg = entity.getItemBySlot(EquipmentSlotType.LEGS);
+                        ItemStack Boots = entity.getItemBySlot(EquipmentSlotType.FEET);
+
                         StrayEntity newMob = new StrayEntity(EntityType.STRAY, entity.level);
                         newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+
+                        newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                        newMob.setItemInHand(Hand.MAIN_HAND, mainHand);
+                        newMob.setItemInHand(Hand.OFF_HAND, offHand);
+                        newMob.setItemSlot(EquipmentSlotType.HEAD, Helm);
+                        newMob.setItemSlot(EquipmentSlotType.CHEST, Chest);
+                        newMob.setItemSlot(EquipmentSlotType.LEGS, Leg);
+                        newMob.setItemSlot(EquipmentSlotType.FEET, Boots);
+
                         entity.level.addFreshEntity(newMob);
-                        entity.remove();
+                        entity.setPos(entity.getX(), -1, entity.getZ());
+                        entity.kill();
                     }
-                    if (event.getEntityLiving().getType() == EntityType.CREEPER) {
-                        CreeperEntity creeperEntity = (CreeperEntity) event.getEntityLiving();
+                    if (event.getEntity().getType() == EntityType.CREEPER) {
+                        CreeperEntity creeperEntity = (CreeperEntity) event.getEntity();
                         if(creeperEntity.isPowered()){return;}
                         else{
                             try {
@@ -364,6 +404,21 @@ public class ForgeEvents {
                         event.getEntityLiving().remove();
                     }
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void Hardened(EntityJoinWorldEvent event){
+        if(!event.getEntity().level.isClientSide() && event.getEntity() instanceof MonsterEntity){
+            if(VDM.config.HARDENED.get()) {
+                float health = ((MonsterEntity) event.getEntity()).getHealth() * 0.5f;
+                ModifiableAttributeInstance modifiableAttributeInstance = ((MonsterEntity) event.getEntity()).getAttribute(Attributes.MAX_HEALTH);
+                if (modifiableAttributeInstance == null) {
+                    return;
+                }
+                modifiableAttributeInstance.addTransientModifier(new AttributeModifier(UUID.fromString("D6F0BA2-1186-46AC-B896-C61C5CEE99CC"), "Hardened health boost", health, AttributeModifier.Operation.ADDITION));
+                ((MonsterEntity) event.getEntity()).setHealth(((MonsterEntity) event.getEntity()).getHealth() * 1.5f);
             }
         }
     }

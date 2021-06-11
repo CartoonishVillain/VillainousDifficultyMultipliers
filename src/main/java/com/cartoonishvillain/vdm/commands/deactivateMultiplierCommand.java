@@ -11,18 +11,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import java.util.ArrayList;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class deactivateMultiplierCommand implements Command<CommandSource> {
     private static final deactivateMultiplierCommand CMD = new deactivateMultiplierCommand();
@@ -82,9 +77,14 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 while (config.FATIGUE.get()){
                 VDM.config.FATIGUE.set(false);}
                 break;
+            case "hardened":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.hardened"));
+                while (config.HARDENED.get()){
+                    VDM.config.HARDENED.set(false);}
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
-                while (config.AGING.get() || config.BLACKEYE.get() || config.CANNON.get() || config.FATIGUE.get() || config.KARMICJUSTICE.get() || config.SHIFT.get() || config.SOFTSKIN.get() || config.VENOM.get()){
+                while (config.AGING.get() || config.BLACKEYE.get() || config.CANNON.get() || config.FATIGUE.get() || config.KARMICJUSTICE.get() || config.SHIFT.get() || config.SOFTSKIN.get() || config.VENOM.get() || config.HARDENED.get()){
                 VDM.config.BLACKEYE.set(false);
                 VDM.config.CANNON.set(false);
                 VDM.config.VENOM.set(false);
@@ -92,7 +92,8 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.KARMICJUSTICE.set(false);
                 VDM.config.AGING.set(false);
                 VDM.config.SOFTSKIN.set(false);
-                VDM.config.FATIGUE.set(false);}
+                VDM.config.FATIGUE.set(false);
+                VDM.config.HARDENED.set(false);}
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

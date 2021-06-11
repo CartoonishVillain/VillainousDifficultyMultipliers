@@ -29,10 +29,11 @@ public class activeListCommand implements Command<CommandSource> {
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         AtomicInteger count = new AtomicInteger(0);
         AtomicReference<String> string = new AtomicReference<>("");
+            if(VDM.config.AGING.get()) {string.set(string.get() + "Aging, "); count.set(count.get()+1);}
             if(VDM.config.BLACKEYE.get()) {string.set(string.get() + "Black Eye, "); count.set(count.get()+1);}
             if(VDM.config.CANNON.get()) {string.set(string.get() + "Cannon, "); count.set(count.get()+1);}
-            if(VDM.config.AGING.get()) {string.set(string.get() + "Aging, "); count.set(count.get()+1);}
             if(VDM.config.FATIGUE.get()) {string.set(string.get() + "Fatigue, "); count.set(count.get()+1);}
+            if(VDM.config.HARDENED.get()) {string.set(string.get() + "Hardened, "); count.set(count.get()+1);}
             if(VDM.config.KARMICJUSTICE.get()) {string.set(string.get() + "Karmic Justice, "); count.set(count.get()+1);}
             if(VDM.config.SHIFT.get()) {string.set(string.get() + "Shift, "); count.set(count.get()+1);}
             if(VDM.config.SOFTSKIN.get()) {string.set(string.get() + "Soft Skin, "); count.set(count.get()+1);}
