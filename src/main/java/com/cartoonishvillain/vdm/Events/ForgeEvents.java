@@ -7,14 +7,23 @@ import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilit
 import com.cartoonishvillain.vdm.Commands.CommandManager;
 import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.stats.ServerStatisticsManager;
@@ -34,6 +43,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -119,10 +131,60 @@ public class ForgeEvents {
             if(event.getEntityLiving() instanceof CreeperEntity){
                 CreeperEntity creeperEntity = (CreeperEntity) event.getEntityLiving();
                     if(VDM.config.CANNON.get()){
+                        boolean loot = true;
+                        if (event.getSource().getEntity() == creeperEntity){loot = false;} //creeper naturally exploded. No loot!
                         Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(creeperEntity.level, creeperEntity) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
                         float f = creeperEntity.isPowered() ? 2.0F : 1.0F;
+                        Vector3d vector3d = new Vector3d(creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ());
                         creeperEntity.level.explode(creeperEntity, creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ(), (float)3 * f, explosion$mode);
                         creeperEntity.remove();
+                        //Phase 2 - artificial loot table.
+                        if(loot){
+                            Entity aggressor = event.getSource().getEntity();
+                            if(aggressor instanceof PlayerEntity || aggressor instanceof WolfEntity){
+                                ExperienceOrbEntity experienceOrbEntity = new ExperienceOrbEntity(EntityType.EXPERIENCE_ORB, aggressor.level);
+                                experienceOrbEntity.value = 5;
+                                ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, aggressor.level);
+                                int maxgun = 2;
+                                if(aggressor instanceof PlayerEntity){
+                                    Map<Enchantment, Integer> map =  EnchantmentHelper.getEnchantments(((PlayerEntity) aggressor).getMainHandItem());
+                                    if(map.containsKey(Enchantments.MOB_LOOTING)){
+                                        maxgun = 2 + map.get(Enchantments.MOB_LOOTING);
+                                    }
+                                }
+                                Random random = new Random();
+                                int gunpowderamount = random.nextInt(maxgun+1); // accounting for 0. I don't think it shows up in randoms.
+                                itemEntity.setItem(new ItemStack(Items.GUNPOWDER, gunpowderamount));
+                                experienceOrbEntity.setPos(vector3d.x, vector3d.y, vector3d.z);
+                                itemEntity.setPos(vector3d.x, vector3d.y, vector3d.z);
+                                aggressor.level.addFreshEntity(experienceOrbEntity);
+                                aggressor.level.addFreshEntity(itemEntity);
+                            }
+                            else if(aggressor instanceof SkeletonEntity){
+                                ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, aggressor.level);
+                                Random random = new Random();
+                                int gunpowderamount = random.nextInt(3);
+                                itemEntity.setItem(new ItemStack(Items.GUNPOWDER, gunpowderamount));
+                                ItemEntity Disc = new ItemEntity(EntityType.ITEM, aggressor.level);
+                                Disc.setItem(new ItemStack(MusicDisc(), 1));
+                                itemEntity.setPos(vector3d.x, vector3d.y, vector3d.z);
+                                Disc.setPos(vector3d.x, vector3d.y, vector3d.z);
+                                aggressor.level.addFreshEntity(itemEntity);
+                                aggressor.level.addFreshEntity(Disc);
+                            }else if(aggressor instanceof CreeperEntity && ((CreeperEntity) aggressor).canDropMobsSkull()){
+                                ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, aggressor.level);
+                                Random random = new Random();
+                                int gunpowderamount = random.nextInt(3);
+                                itemEntity.setItem(new ItemStack(Items.GUNPOWDER, gunpowderamount));
+                                ItemEntity Skull = new ItemEntity(EntityType.ITEM, aggressor.level);
+                                Skull.setItem(new ItemStack(Items.CREEPER_HEAD, 1));
+                                itemEntity.setPos(vector3d.x, vector3d.y, vector3d.z);
+                                Skull.setPos(vector3d.x, vector3d.y, vector3d.z);
+                                aggressor.level.addFreshEntity(itemEntity);
+                                aggressor.level.addFreshEntity(Skull);
+
+                            }
+                        }
                     }
             }
         }
@@ -308,6 +370,14 @@ public class ForgeEvents {
 
     private static void agecheck(int age, LivingEntity livingEntity){
         if(age >= 4) livingEntity.remove();
+    }
+
+    private static Item MusicDisc(){
+        ArrayList<Item> music = new ArrayList<Item>(Arrays.asList(Items.MUSIC_DISC_11, Items.MUSIC_DISC_13, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR, Items.MUSIC_DISC_MALL, Items.MUSIC_DISC_MELLOHI, Items.MUSIC_DISC_STAL, Items.MUSIC_DISC_STRAD, Items.MUSIC_DISC_WAIT, Items.MUSIC_DISC_WARD));
+        Random random = new Random();
+        int select = random.nextInt(music.size());
+        if(select == music.size()) select--;
+        return music.get(select);
     }
 
 }
