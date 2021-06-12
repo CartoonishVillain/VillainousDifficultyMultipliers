@@ -15,6 +15,8 @@ public class ServerConfig {
     public ConfigHelper.ConfigValueListener<Boolean> SOFTSKIN;
     public ConfigHelper.ConfigValueListener<Boolean> VENOM;
     public ConfigHelper.ConfigValueListener<Boolean> HARDENED;
+    public ConfigHelper.ConfigValueListener<Boolean> ANGER;
+    public ConfigHelper.ConfigValueListener<Boolean> UNSTABLE;
 
     public ServerConfig(ForgeConfigSpec.Builder builder, ConfigHelper.Subscriber subscriber){
         builder.comment("Enable or Disable Difficulty Increasing Multipliers. True is activated, False is deactivated").push(SCATEGORY_DIFFICULTY_INCREASING);
@@ -27,6 +29,8 @@ public class ServerConfig {
         this.SOFTSKIN = subscriber.subscribe(builder.comment("Your particularly soft skin makes you more vulnerable to damage. All incoming damage has an extra 50% added to it.").define("softSkinMultiplier", false));
         this.VENOM = subscriber.subscribe(builder.comment("Cave spiders inflict poison for a brief moment on easy, and both wither and poison on normal and hard. Spiders also get the ability to poison you for a shorter amount of time.").define("venomMultiplier", false));
         this.HARDENED = subscriber.subscribe(builder.comment("All hostile mobs have increased health").define("hardenedMultiplier", false));
+        this.ANGER = subscriber.subscribe(builder.comment("Pillagers, Skeletons, Strays, and Witches all have significantly sped up attack rates.").define("angerMultiplier", false));
+        this.UNSTABLE = subscriber.subscribe(builder.comment("Creeper explosions and Ghast fireballs have a larger explosion radius. For all your mass terrain destruction needs.").define("unstableMultiplier", false));
         builder.pop();
     }
 

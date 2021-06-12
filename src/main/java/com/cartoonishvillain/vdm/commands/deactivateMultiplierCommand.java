@@ -82,9 +82,19 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 while (config.HARDENED.get()){
                     VDM.config.HARDENED.set(false);}
                 break;
+            case "anger":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.anger"));
+                while (config.ANGER.get()){
+                    VDM.config.ANGER.set(false);}
+                break;
+            case "unstable":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.unstable"));
+                while (config.UNSTABLE.get()){
+                    VDM.config.UNSTABLE.set(false);}
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
-                while (config.AGING.get() || config.BLACKEYE.get() || config.CANNON.get() || config.FATIGUE.get() || config.KARMICJUSTICE.get() || config.SHIFT.get() || config.SOFTSKIN.get() || config.VENOM.get() || config.HARDENED.get()){
+                while (config.AGING.get() || config.BLACKEYE.get() || config.CANNON.get() || config.FATIGUE.get() || config.KARMICJUSTICE.get() || config.SHIFT.get() || config.SOFTSKIN.get() || config.VENOM.get() || config.HARDENED.get() || config.ANGER.get() || config.UNSTABLE.get()){
                 VDM.config.BLACKEYE.set(false);
                 VDM.config.CANNON.set(false);
                 VDM.config.VENOM.set(false);
@@ -93,7 +103,9 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.AGING.set(false);
                 VDM.config.SOFTSKIN.set(false);
                 VDM.config.FATIGUE.set(false);
-                VDM.config.HARDENED.set(false);}
+                VDM.config.HARDENED.set(false);
+                VDM.config.ANGER.set(false);
+                VDM.config.UNSTABLE.set(false);}
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

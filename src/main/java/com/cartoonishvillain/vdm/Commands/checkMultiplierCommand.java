@@ -71,6 +71,14 @@ public class checkMultiplierCommand implements Command<CommandSource> {
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Heroic=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.heroic"), false);
                 break;
+            case "anger":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Anger=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.anger"), false);
+                break;
+            case "unstable":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Unstable=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.unstable"), false);
+                break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("error.villainousdifficultymultipliers.listmultipliers"), false);

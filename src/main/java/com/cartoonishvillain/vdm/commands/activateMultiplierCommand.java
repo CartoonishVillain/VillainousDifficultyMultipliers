@@ -82,10 +82,20 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 while (!config.HARDENED.get()){
                     VDM.config.HARDENED.set(true);}
                 break;
+            case "anger":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.anger"));
+                while (!config.ANGER.get()){
+                    VDM.config.ANGER.set(true);}
+                break;
+            case "unstable":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.unstable"));
+                while (!config.UNSTABLE.get()){
+                    VDM.config.UNSTABLE.set(true);}
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allwarning").withStyle(TextFormatting.RED, TextFormatting.BOLD));
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allon"));
-                while(!(config.AGING.get() && config.BLACKEYE.get() && config.CANNON.get() && config.FATIGUE.get() && config.KARMICJUSTICE.get() && config.SHIFT.get() && config.SOFTSKIN.get() && config.VENOM.get() && config.HARDENED.get())){
+                while(!(config.AGING.get() && config.BLACKEYE.get() && config.CANNON.get() && config.FATIGUE.get() && config.KARMICJUSTICE.get() && config.SHIFT.get() && config.SOFTSKIN.get() && config.VENOM.get() && config.HARDENED.get() && config.ANGER.get() && config.UNSTABLE.get())){
                 VDM.config.BLACKEYE.set(true);
                 VDM.config.CANNON.set(true);
                 VDM.config.VENOM.set(true);
@@ -94,7 +104,9 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.AGING.set(true);
                 VDM.config.SOFTSKIN.set(true);
                 VDM.config.FATIGUE.set(true);
-                VDM.config.HARDENED.set(true);}
+                VDM.config.HARDENED.set(true);
+                VDM.config.ANGER.set(true);
+                VDM.config.UNSTABLE.set(true);}
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("activation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

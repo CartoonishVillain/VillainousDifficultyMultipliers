@@ -5,6 +5,8 @@ import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapabilit
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
+import com.cartoonishvillain.vdm.Entities.Goals.CrossbowAngerManagement;
+import com.cartoonishvillain.vdm.Entities.Goals.RangedAngerManagment;
 import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
 import net.minecraft.enchantment.Enchantment;
@@ -16,6 +18,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
@@ -423,10 +426,76 @@ public class ForgeEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void Anger(EntityJoinWorldEvent event){
+        if(!event.getEntity().level.isClientSide()){
+            if(VDM.config.ANGER.get()) {
+                if (event.getEntity().getType().equals(EntityType.SKELETON) || event.getEntity().getType().equals(EntityType.STRAY)) {
+                    AbstractSkeletonEntity abstractSkeletonEntity = (AbstractSkeletonEntity) event.getEntity();
+                    try {
+                        RangedBowAttackGoal<AbstractSkeletonEntity> rangedBowAttackGoal = ObfuscationReflectionHelper.getPrivateValue(AbstractSkeletonEntity.class, abstractSkeletonEntity, "field_85037_d");
+                        if (abstractSkeletonEntity.level.getDifficulty() != Difficulty.HARD)
+                            rangedBowAttackGoal.setMinAttackInterval(30);
+                        else rangedBowAttackGoal.setMinAttackInterval(15);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                if(event.getEntity().getType().equals(EntityType.PILLAGER)){
+                    PillagerEntity pillagerEntity = (PillagerEntity) event.getEntity();
+                    Set<PrioritizedGoal> prioritizedGoals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, pillagerEntity.goalSelector, "field_220892_d");
+                    Goal toremove = null;
+                    for(PrioritizedGoal prioritizedGoal : prioritizedGoals){
+                        if(prioritizedGoal.getGoal() instanceof RangedCrossbowAttackGoal){
+                            toremove = prioritizedGoal.getGoal();
+                            if(toremove != null) break;
+                        }
+                    }
+                    if(toremove != null){
+                    pillagerEntity.goalSelector.removeGoal(toremove);
+                    pillagerEntity.goalSelector.addGoal(3, new CrossbowAngerManagement(pillagerEntity, 1.5D, 8.0F));
+                    }
+                }if(event.getEntity().getType().equals(EntityType.WITCH)){
+                    WitchEntity witchEntity = (WitchEntity) event.getEntity();
+                    Set<PrioritizedGoal> prioritizedGoals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, witchEntity.goalSelector, "field_220892_d");
+                    Goal toremove = null;
+                    for(PrioritizedGoal prioritizedGoal : prioritizedGoals) {
+                        if (prioritizedGoal.getGoal() instanceof RangedAttackGoal) {
+                            toremove = prioritizedGoal.getGoal();
+                            if (toremove != null) break;
+                        }
+                    }
+                        if(toremove != null){
+                            witchEntity.goalSelector.removeGoal(toremove);
+                            witchEntity.goalSelector.addGoal(3, new RangedAngerManagment(witchEntity, 1.0D, 60, 10.0F));
+                            GoalSelector goalSelector = witchEntity.goalSelector;
+                        }
+                }
+
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void Unstable(EntityJoinWorldEvent event){
+        if (!event.getEntity().level.isClientSide()){
+            if(VDM.config.UNSTABLE.get()) {
+                if (event.getEntity().getType() == EntityType.GHAST) {
+                    GhastEntity ghastEntity = (GhastEntity) event.getEntity();
+                    ObfuscationReflectionHelper.setPrivateValue(GhastEntity.class, ghastEntity, 5, "field_92014_j");
+                }
+                if (event.getEntity().getType().equals(EntityType.CREEPER)) {
+                    CreeperEntity creeperEntity = (CreeperEntity) event.getEntity();
+                    ObfuscationReflectionHelper.setPrivateValue(CreeperEntity.class, creeperEntity, 5, "field_82226_g");
+                }
+            }
+        }
+    }
+
     private static void agecheck(int age, LivingEntity livingEntity){
         if(age >= 4) livingEntity.remove();
     }
-
     private static Item MusicDisc(){
         ArrayList<Item> music = new ArrayList<Item>(Arrays.asList(Items.MUSIC_DISC_11, Items.MUSIC_DISC_13, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR, Items.MUSIC_DISC_MALL, Items.MUSIC_DISC_MELLOHI, Items.MUSIC_DISC_STAL, Items.MUSIC_DISC_STRAD, Items.MUSIC_DISC_WAIT, Items.MUSIC_DISC_WARD));
         Random random = new Random();
@@ -434,5 +503,7 @@ public class ForgeEvents {
         if(select == music.size()) select--;
         return music.get(select);
     }
+
+
 
 }
