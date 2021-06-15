@@ -200,7 +200,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void Shift(EntityJoinWorldEvent event){
-        if(!event.getEntity().level.isClientSide()){
+        if(!event.getWorld().isClientSide() && event.getWorld().getServer().getPlayerCount() != 0){
                 if(VDM.config.SHIFT.get()) {
                     if (event.getEntity().getType() == EntityType.ZOMBIE) {
                         ZombieEntity entity = (ZombieEntity) event.getEntity();
@@ -217,7 +217,7 @@ public class ForgeEvents {
                         int chance = random.nextInt(12);
                         if (chance < 6) {
                             DrownedEntity newMob = new DrownedEntity(EntityType.DROWNED, entity.level);
-                            newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
                             newMob.setItemInHand(Hand.MAIN_HAND, mainHand);
                             newMob.setItemInHand(Hand.OFF_HAND, offHand);
                             newMob.setItemSlot(EquipmentSlotType.HEAD, Helm);
@@ -229,13 +229,13 @@ public class ForgeEvents {
                             entity.kill();
                         } else if (chance < 11) {
                             HuskEntity newMob = new HuskEntity(EntityType.HUSK, entity.level);
-                            newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
                             entity.level.addFreshEntity(newMob);
                             entity.setPos(entity.getX(), -1, entity.getZ());
                             entity.kill();
                         } else {
                             ZombieVillagerEntity newMob = new ZombieVillagerEntity(EntityType.ZOMBIE_VILLAGER, entity.level);
-                            newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
                             entity.level.addFreshEntity(newMob);
                             entity.setPos(entity.getX(), -1, entity.getZ());
                             entity.kill();
@@ -253,7 +253,7 @@ public class ForgeEvents {
                         ItemStack Boots = entity.getItemBySlot(EquipmentSlotType.FEET);
 
                         StrayEntity newMob = new StrayEntity(EntityType.STRAY, entity.level);
-                        newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+                        newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
 
                         newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
                         newMob.setItemInHand(Hand.MAIN_HAND, mainHand);
@@ -263,8 +263,8 @@ public class ForgeEvents {
                         newMob.setItemSlot(EquipmentSlotType.LEGS, Leg);
                         newMob.setItemSlot(EquipmentSlotType.FEET, Boots);
 
-                        entity.level.addFreshEntity(newMob);
                         entity.setPos(entity.getX(), -1, entity.getZ());
+                        entity.level.addFreshEntity(newMob);
                         entity.kill();
                     }
                     if (event.getEntity().getType() == EntityType.CREEPER) {
