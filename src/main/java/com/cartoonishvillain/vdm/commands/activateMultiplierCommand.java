@@ -82,6 +82,10 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.unstable"));
                     VDM.config.UNSTABLE.set(true);
                 break;
+            case "kinetic":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.kinetic"));
+                VDM.config.KINETIC.set(true);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allwarning").withStyle(TextFormatting.RED, TextFormatting.BOLD));
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allon"));

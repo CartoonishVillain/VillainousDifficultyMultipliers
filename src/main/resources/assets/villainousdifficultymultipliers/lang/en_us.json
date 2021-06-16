@@ -11,6 +11,7 @@
   "activation.villainousdifficultymultipliers.hardened": "Difficulty Multiplier: Hardened on!",
   "activation.villainousdifficultymultipliers.anger": "Difficulty Multiplier: Anger on!",
   "activation.villainousdifficultymultipliers.unstable": "Difficulty Multiplier: Unstable on!",
+  "activation.villainousdifficultymultipliers.kinetic": "Difficulty Multiplier: Kinetic on!",
   "check.villainousdifficultymultipliers.blackeye": "When you take damage, your ability to heal is nullified until you hit a monster or a player with a melee attack. Punch 'em in the chin!",
   "check.villainousdifficultymultipliers.cannon": "Bombs away! Creepers always explode on death, regardless of method.",
   "check.villainousdifficultymultipliers.venom": "Cave spiders inflict poison for a brief moment on easy, and both wither and poison on normal and hard. Spiders also get the ability to poison you for a shorter amount of time.",
@@ -22,6 +23,7 @@
   "check.villainousdifficultymultipliers.heroic": "All difficulty increasing multipliers are enabled or disabled at once.",
   "check.villainousdifficultymultipliers.hardened": "All hostile mobs have increased health",
   "check.villainousdifficultymultipliers.anger": "Pillagers, Skeletons, Strays, and Witches all have significantly sped up attack rates.",
+  "check.villainousdifficultymultipliers.kinetic": "Future technology embedded into your skin allows you to store up kinetic energy from attacks to release on your foes on your next attack, adding up to 50 hearts of damage maximum.",
   "check.villainousdifficultymultipliers.unstable": "Creeper explosions and Ghast fireballs have a larger explosion radius. For all your mass terrain destruction needs.",
   "deactivation.villainousdifficultymultipliers.blackeye": "Difficulty Multiplier: Black Eye off!",
   "deactivation.villainousdifficultymultipliers.cannon": "Difficulty Multiplier: Cannon off!",
@@ -35,6 +37,7 @@
   "deactivation.villainousdifficultymultipliers.hardened": "Difficulty Multiplier: Hardened off!",
   "deactivation.villainousdifficultymultipliers.anger": "Difficulty Multiplier: Anger off!",
   "deactivation.villainousdifficultymultipliers.unstable": "Difficulty Multiplier: Unstable off!",
+  "deactivation.villainousdifficultymultipliers.kinetic": "Difficulty Multiplier: Kinetic off!",
   "error.villainousdifficultymultipliers.listmultipliers": "Run /vdm list for a list of available multipliers!",
   "activation.villainousdifficultymultipliers.invalid": "Activation failed! Invalid multiplier!",
   "deactivation.villainousdifficultymultipliers.invalid": "Deactivation failed! Invalid multiplier!",
@@ -52,14 +55,7 @@
   "death.attack.fatigue": "%1$s forgot how important sleep is and died because of it.",
   "activation.villainousdifficultymultipliers.allwarning": "Warning!",
   "activation.villainousdifficultymultipliers.allon": "All difficulty increasing multipliers activated! Good luck.",
-  "deactivation.villainousdifficultymultipliers.allon": "All difficulty increasing multipliers deactivated! Rest easy."
-
-
-
-
-
-
-
-
-
+  "deactivation.villainousdifficultymultipliers.allon": "All difficulty increasing multipliers deactivated! Rest easy.",
+  "info.villainousdifficultymultipliers.increasing": "Difficulty Increasing:",
+  "info.villainousdifficultymultipliers.decreasing": "Difficulty Decreasing:"
 }

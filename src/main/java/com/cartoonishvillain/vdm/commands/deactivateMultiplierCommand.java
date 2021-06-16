@@ -81,6 +81,10 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.unstable"));
                     VDM.config.UNSTABLE.set(false);
                 break;
+            case "kinetic":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.kinetic"));
+                VDM.config.KINETIC.set(false);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
                 VDM.config.BLACKEYE.set(false);
