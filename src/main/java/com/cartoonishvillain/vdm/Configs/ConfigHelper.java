@@ -128,6 +128,7 @@ public class ConfigHelper
                 while (this.configValue.get() != data) { //for some reason, the code doesn't work every time. This is a hacky way to get around that.
                     this.update(); //supposed to ensure updated data. Helps a little, but not by much
                     this.configValue.set(data); //Sets the value properly. Sometimes.
+                    this.update();
                 }
             }
         }

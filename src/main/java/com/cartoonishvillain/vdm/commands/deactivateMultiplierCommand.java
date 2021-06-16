@@ -38,63 +38,51 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
             case "blackeye":
             case "black_eye":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blackeye"));
-                while (config.BLACKEYE.get()){
-                VDM.config.BLACKEYE.set(false);}
+                VDM.config.BLACKEYE.set(false);
                 break;
             case "cannon":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.cannon"));
-                while (config.CANNON.get()){
-                VDM.config.CANNON.set(false);}
+                VDM.config.CANNON.set(false);
             case "venom":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.venom"));
-                while (config.VENOM.get()){
-                VDM.config.VENOM.set(false);}
+                VDM.config.VENOM.set(false);
                 break;
             case "shift":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.shift"));
-                while (config.SHIFT.get()){
-                VDM.config.SHIFT.set(false);}
+                VDM.config.SHIFT.set(false);
                 break;
             case "karmicjustice":
             case "karmic_justice":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.karmicjustice"));
-                while (config.KARMICJUSTICE.get()){
-                VDM.config.KARMICJUSTICE.set(false);}
+                VDM.config.KARMICJUSTICE.set(false);
                 break;
             case "aging":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.aging"));
-                while (config.AGING.get()){
-                VDM.config.AGING.set(false);}
+                VDM.config.AGING.set(false);
                 break;
             case "softskin":
             case "soft_skin":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.softskin"));
-                while (config.SOFTSKIN.get()){
-                VDM.config.SOFTSKIN.set(false);}
+                VDM.config.SOFTSKIN.set(false);
                 break;
             case "fatigue":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.fatigue"));
-                while (config.FATIGUE.get()){
-                VDM.config.FATIGUE.set(false);}
+                VDM.config.FATIGUE.set(false);
                 break;
             case "hardened":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.hardened"));
-                while (config.HARDENED.get()){
-                    VDM.config.HARDENED.set(false);}
+                    VDM.config.HARDENED.set(false);
                 break;
             case "anger":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.anger"));
-                while (config.ANGER.get()){
-                    VDM.config.ANGER.set(false);}
+                    VDM.config.ANGER.set(false);
                 break;
             case "unstable":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.unstable"));
-                while (config.UNSTABLE.get()){
-                    VDM.config.UNSTABLE.set(false);}
+                    VDM.config.UNSTABLE.set(false);
                 break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
-                while (config.AGING.get() || config.BLACKEYE.get() || config.CANNON.get() || config.FATIGUE.get() || config.KARMICJUSTICE.get() || config.SHIFT.get() || config.SOFTSKIN.get() || config.VENOM.get() || config.HARDENED.get() || config.ANGER.get() || config.UNSTABLE.get()){
                 VDM.config.BLACKEYE.set(false);
                 VDM.config.CANNON.set(false);
                 VDM.config.VENOM.set(false);
@@ -105,7 +93,7 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.FATIGUE.set(false);
                 VDM.config.HARDENED.set(false);
                 VDM.config.ANGER.set(false);
-                VDM.config.UNSTABLE.set(false);}
+                VDM.config.UNSTABLE.set(false);
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);
