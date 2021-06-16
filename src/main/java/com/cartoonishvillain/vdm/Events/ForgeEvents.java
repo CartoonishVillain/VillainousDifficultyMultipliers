@@ -57,6 +57,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Mod.EventBusSubscriber(modid = VDM.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents {
@@ -488,6 +489,47 @@ public class ForgeEvents {
                 if (event.getEntity().getType().equals(EntityType.CREEPER)) {
                     CreeperEntity creeperEntity = (CreeperEntity) event.getEntity();
                     ObfuscationReflectionHelper.setPrivateValue(CreeperEntity.class, creeperEntity, 5, "field_82226_g");
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void Kinetic(LivingDamageEvent event){
+        if(!event.getEntityLiving().level.isClientSide()){
+            if(VDM.config.KINETIC.get()) {
+                if (event.getEntityLiving() instanceof PlayerEntity) {
+                    DamageSource damageSource = event.getSource();
+                    float damage = event.getAmount();
+                    if (damageSource.isFire()) {
+                    } else if (damageSource.isProjectile()) {
+                        damage = damage * 1.2f;
+                    } else if (damageSource.isMagic()) {
+                        damage = damage * 0.5f;
+                    } else if (damageSource.isExplosion()) {
+                        damage = damage * 2f;
+                    } else {
+                        damage = damage * 1.5f;
+                    }
+
+                    float finalDamage = damage;
+                    event.getEntityLiving().getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
+                        h.setKineticBuildup(finalDamage);
+                    });
+                } else if (event.getSource().getDirectEntity() instanceof PlayerEntity && event.getEntity() instanceof LivingEntity) {
+                    AtomicReference<Float> atomicFloat = new AtomicReference<>(0f);
+                    event.getSource().getDirectEntity().getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
+                        atomicFloat.set(h.getKineticBuildup());
+                        h.setKineticBuildup(h.getKineticBuildup() * -1);
+                    });
+                    float moreDamage = atomicFloat.get();
+                    event.setAmount(event.getAmount() + moreDamage);
+                }
+            }else{
+                if (event.getEntityLiving() instanceof PlayerEntity) {
+                    event.getEntityLiving().getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
+                        h.setKineticBuildup(h.getKineticBuildup() * -1);
+                    });
                 }
             }
         }

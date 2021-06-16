@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 
 public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityProvider, INBTSerializable<CompoundNBT> {
     protected boolean blackEye = false;
+    protected float kineticBuildup = 0f;
     public final LazyOptional<IPlayerCapability> holder = LazyOptional.of(()->this);
     @Override
     public boolean getBlackEyeStatus() {
@@ -18,9 +19,16 @@ public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityPr
     }
 
     @Override
+    public float getKineticBuildup() {return kineticBuildup;}
+
+    @Override
     public void setBlackEyeStatus(boolean set) {
         blackEye = set;
     }
+
+    @Override
+    public void setKineticBuildup(float damage) {kineticBuildup += damage;
+    if(kineticBuildup > 100f) kineticBuildup = 100;}
 
     @Nonnull
     @Override
@@ -33,11 +41,13 @@ public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityPr
     public CompoundNBT serializeNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.putBoolean("blackeyestatus", blackEye);
+        tag.putFloat("kineticbuildup", kineticBuildup);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         blackEye = nbt.getBoolean("blackeyestatus");
+        kineticBuildup = nbt.getFloat("kineticbuildup");
     }
 }

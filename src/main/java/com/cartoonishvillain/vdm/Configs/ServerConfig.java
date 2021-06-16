@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber
 public class ServerConfig {
     public static final String SCATEGORY_DIFFICULTY_INCREASING = "Difficulty Increasing multiplier";
+    public static final String SCATEGORY_DIFFICULTY_DECREASING = "Difficulty Decreasing multiplier";
     public ConfigHelper.ConfigValueListener<Boolean> AGING;
     public ConfigHelper.ConfigValueListener<Boolean> BLACKEYE;
     public ConfigHelper.ConfigValueListener<Boolean> CANNON;
@@ -17,6 +18,8 @@ public class ServerConfig {
     public ConfigHelper.ConfigValueListener<Boolean> HARDENED;
     public ConfigHelper.ConfigValueListener<Boolean> ANGER;
     public ConfigHelper.ConfigValueListener<Boolean> UNSTABLE;
+
+    public ConfigHelper.ConfigValueListener<Boolean> KINETIC;
 
     public ServerConfig(ForgeConfigSpec.Builder builder, ConfigHelper.Subscriber subscriber){
         builder.comment("Enable or Disable Difficulty Increasing Multipliers. True is activated, False is deactivated").push(SCATEGORY_DIFFICULTY_INCREASING);
@@ -32,6 +35,9 @@ public class ServerConfig {
         this.ANGER = subscriber.subscribe(builder.comment("Pillagers, Skeletons, Strays, and Witches all have significantly sped up attack rates.").define("angerMultiplier", false));
         this.UNSTABLE = subscriber.subscribe(builder.comment("Creeper explosions and Ghast fireballs have a larger explosion radius. For all your mass terrain destruction needs.").define("unstableMultiplier", false));
         builder.pop();
-    }
 
+        builder.comment("Enabled or Disable Difficulty Decreasing Multipliers. True is activated, False is deactivated").push(SCATEGORY_DIFFICULTY_DECREASING);
+        this.KINETIC = subscriber.subscribe(builder.comment("Future technology embedded into your skin allows you to store up kinetic energy from attacks to release on your foes on your next attack, adding up to 50 hearts of damage maximum.").define("KineticMultiplier", false));
+        builder.pop();
+    }
 }

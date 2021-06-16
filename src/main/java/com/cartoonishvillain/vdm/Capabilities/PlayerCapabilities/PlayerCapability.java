@@ -21,6 +21,7 @@ public class PlayerCapability {
             public INBT writeNBT(Capability<IPlayerCapability> capability, IPlayerCapability instance, Direction side) {
                 CompoundNBT tag = new CompoundNBT();
                 tag.putBoolean("blackeyestatus", instance.getBlackEyeStatus());
+                tag.putFloat("kineticbuildup", instance.getKineticBuildup());
                 return tag;
             }
 
@@ -28,6 +29,7 @@ public class PlayerCapability {
             public void readNBT(Capability<IPlayerCapability> capability, IPlayerCapability instance, Direction side, INBT nbt) {
                 CompoundNBT tag = (CompoundNBT) nbt;
                 instance.setBlackEyeStatus(tag.getBoolean("blackeyestatus"));
+                instance.setKineticBuildup(tag.getFloat("kineticbuildup"));
             }
         }, new Callable<PlayerCapabilityManager>(){
             @Override
