@@ -33,6 +33,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.stats.ServerStatisticsManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
@@ -46,10 +48,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -532,6 +531,26 @@ public class ForgeEvents {
                     });
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void Undying(LivingDeathEvent event){
+        if(!event.getEntityLiving().level.isClientSide()){
+            if (event.getEntityLiving() instanceof PlayerEntity && VDM.config.UNDYING.get()){
+                event.setCanceled(true);
+                ((PlayerEntity) event.getEntityLiving()).awardStat(Stats.DEATHS, 1);
+                ((PlayerEntity) event.getEntityLiving()).getScoreboard().forAllObjectives(ScoreCriteria.DEATH_COUNT, event.getEntityLiving().getScoreboardName(), Score::increment);
+                event.getEntityLiving().setHealth(event.getEntityLiving().getMaxHealth());
+
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void Flammable(LivingEvent.LivingUpdateEvent event){
+        if(!event.getEntityLiving().level.isClientSide() && VDM.config.FLAMMABLE.get()){
+            if(event.getEntityLiving().getRemainingFireTicks() == 1){event.getEntityLiving().setRemainingFireTicks(20);}
         }
     }
 

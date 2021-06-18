@@ -85,6 +85,14 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.kinetic"));
                 VDM.config.KINETIC.set(false);
                 break;
+            case "undying":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.undying"));
+                VDM.config.UNDYING.set(false);
+                break;
+            case "flammable":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.flammable"));
+                VDM.config.FLAMMABLE.set(false);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
                 VDM.config.BLACKEYE.set(false);
@@ -98,6 +106,7 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.HARDENED.set(false);
                 VDM.config.ANGER.set(false);
                 VDM.config.UNSTABLE.set(false);
+                VDM.config.FLAMMABLE.set(false);
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);
