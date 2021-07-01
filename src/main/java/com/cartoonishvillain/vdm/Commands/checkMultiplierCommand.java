@@ -30,6 +30,7 @@ public class checkMultiplierCommand implements Command<CommandSource> {
         switch (newString){
             case "blackeye":
             case "black_eye":
+            case "black eye":
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Black Eye=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.blackeye"), false);
                 break;
@@ -47,6 +48,7 @@ public class checkMultiplierCommand implements Command<CommandSource> {
                 break;
             case "karmicjustice":
             case "karmic_justice":
+            case "karmic justice":
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Karmic Justice=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.karmicjustice"), false);
                 break;
@@ -56,6 +58,7 @@ public class checkMultiplierCommand implements Command<CommandSource> {
                 break;
             case "softskin":
             case "soft_skin":
+            case "soft skin":
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Soft Skin=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.softskin"), false);
                 break;
@@ -71,6 +74,9 @@ public class checkMultiplierCommand implements Command<CommandSource> {
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Heroic=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.heroic"), false);
                 break;
+            case "keystothecity":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Keys to the City=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.keystothecity"), false);
             case "anger":
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Anger=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.anger"), false);
@@ -90,6 +96,20 @@ public class checkMultiplierCommand implements Command<CommandSource> {
             case "flammable":
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Flammable=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.flammable"), false);
+                break;
+            case "fuelefficient":
+            case "fuel_efficient":
+            case "fuel efficient":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Fuel Efficient=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.fuelefficient"), false);
+                break;
+            case "blacksmithing":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Blacksmithing=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.blacksmithing"), false);
+                break;
+            case "warranty":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Warranty=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.warranty"), false);
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

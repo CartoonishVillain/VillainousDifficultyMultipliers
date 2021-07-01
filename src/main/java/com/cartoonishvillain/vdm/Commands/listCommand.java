@@ -27,7 +27,9 @@ public class listCommand implements Command<CommandSource> {
         context.getSource().sendSuccess(new StringTextComponent("Aging, Anger, Black Eye, Cannon, Fatigue, Flammable, Hardened, Karmic Justice, Shift, Soft Skin, Unstable, Venom"), false);
         context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.heroic"), false);
         context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.decreasing").withStyle(TextFormatting.BLUE, TextFormatting.BOLD), false);
-        context.getSource().sendSuccess(new StringTextComponent("Kinetic, Undying"), false);
+        context.getSource().sendSuccess(new StringTextComponent("Blacksmithing, Fuel Efficient, Kinetic, Undying, Warranty"), false);
+        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.keys"), false);
+
         return 0;
     }
 }

@@ -37,6 +37,7 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
         switch (newString){
             case "blackeye":
             case "black_eye":
+            case "black eye":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blackeye"));
                 VDM.config.BLACKEYE.set(false);
                 break;
@@ -53,6 +54,7 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 break;
             case "karmicjustice":
             case "karmic_justice":
+            case "karmic justice":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.karmicjustice"));
                 VDM.config.KARMICJUSTICE.set(false);
                 break;
@@ -62,6 +64,7 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 break;
             case "softskin":
             case "soft_skin":
+            case "soft skin":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.softskin"));
                 VDM.config.SOFTSKIN.set(false);
                 break;
@@ -93,6 +96,20 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.flammable"));
                 VDM.config.FLAMMABLE.set(false);
                 break;
+            case "fuelefficient":
+            case "fuel_efficient":
+            case "fuel efficient":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.fuelefficient"));
+                VDM.config.FUELEFFICIENT.set(false);
+                break;
+            case "blacksmithing":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blacksmithing"));
+                VDM.config.BLACKSMITHING.set(false);
+                break;
+            case "warranty":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.warranty"));
+                VDM.config.WARRANTY.set(false);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
                 VDM.config.BLACKEYE.set(false);
@@ -107,6 +124,14 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.ANGER.set(false);
                 VDM.config.UNSTABLE.set(false);
                 VDM.config.FLAMMABLE.set(false);
+                break;
+            case "keystothecity":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.keysallon"));
+                VDM.config.KINETIC.set(false);
+                VDM.config.UNDYING.set(false);
+                VDM.config.FUELEFFICIENT.set(false);
+                VDM.config.BLACKSMITHING.set(false);
+                VDM.config.WARRANTY.set(false);
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

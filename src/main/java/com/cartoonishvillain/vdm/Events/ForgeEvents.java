@@ -28,9 +28,8 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.scoreboard.Score;
@@ -49,6 +48,9 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.AnvilRepairEvent;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -554,9 +556,33 @@ public class ForgeEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void FuelEfficiency(FurnaceFuelBurnTimeEvent event){
+        if(VDM.config.FUELEFFICIENT.get()) {event.setBurnTime(event.getBurnTime() * 4);}
+    }
+
+    @SubscribeEvent
+    public static void Blacksmithing(AnvilRepairEvent event){if(VDM.config.BLACKSMITHING.get()){event.setBreakChance(0.06f);}}
+
+    @SubscribeEvent
+    public static void Warranty(PlayerDestroyItemEvent event){
+        if(!event.getPlayer().level.isClientSide() && (event.getOriginal().getItem() instanceof ToolItem || event.getOriginal().getItem() instanceof FlintAndSteelItem) && VDM.config.WARRANTY.get()){
+        event.getOriginal().setDamageValue(0);
+        CompoundNBT nbt = event.getOriginal().serializeNBT();
+        ItemStack replacement = new ItemStack(event.getOriginal().getItem(), 1);
+        replacement.deserializeNBT(nbt);
+        Vector3d vector3d = event.getPlayer().position();
+        ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, event.getPlayer().level);
+        itemEntity.setItem(replacement);
+        itemEntity.setPos(vector3d.x, vector3d.y, vector3d.z);
+        event.getPlayer().level.addFreshEntity(itemEntity);
+        }
+    }
+
     private static void agecheck(int age, LivingEntity livingEntity){
         if(age >= 4) livingEntity.remove();
     }
+
     private static Item MusicDisc(){
         ArrayList<Item> music = new ArrayList<Item>(Arrays.asList(Items.MUSIC_DISC_11, Items.MUSIC_DISC_13, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR, Items.MUSIC_DISC_MALL, Items.MUSIC_DISC_MELLOHI, Items.MUSIC_DISC_STAL, Items.MUSIC_DISC_STRAD, Items.MUSIC_DISC_WAIT, Items.MUSIC_DISC_WARD));
         Random random = new Random();
