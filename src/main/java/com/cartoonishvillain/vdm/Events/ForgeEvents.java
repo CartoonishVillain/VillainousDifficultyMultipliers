@@ -43,6 +43,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.GameRules;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -143,6 +144,7 @@ public class ForgeEvents {
                     if(VDM.config.CANNON.get()){
                         boolean loot = true;
                         if (event.getSource().getEntity() == creeperEntity){loot = false;} //creeper naturally exploded. No loot!
+                        if (event.getEntityLiving().level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)){loot = false;}
                         Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(creeperEntity.level, creeperEntity) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
                         float f = creeperEntity.isPowered() ? 2.0F : 1.0F;
                         Vector3d vector3d = new Vector3d(creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ());
