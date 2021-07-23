@@ -1,11 +1,11 @@
 package com.cartoonishvillain.vdm.Entities.Goals;
 
-import net.minecraft.entity.ai.goal.RangedCrossbowAttackGoal;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.world.entity.ai.goal.RangedCrossbowAttackGoal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class CrossbowAngerManagement extends RangedCrossbowAttackGoal {
-    public CrossbowAngerManagement(MonsterEntity p_i50322_1_, double p_i50322_2_, float p_i50322_4_) {
+    public CrossbowAngerManagement(Monster p_i50322_1_, double p_i50322_2_, float p_i50322_4_) {
         super(p_i50322_1_, p_i50322_2_, p_i50322_4_);
     }
 

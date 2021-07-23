@@ -9,41 +9,37 @@ import com.cartoonishvillain.vdm.Entities.Goals.CrossbowAngerManagement;
 import com.cartoonishvillain.vdm.Entities.Goals.RangedAngerManagment;
 import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.scoreboard.Score;
-import net.minecraft.scoreboard.ScoreCriteria;
-import net.minecraft.stats.ServerStatisticsManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.Score;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -54,7 +50,7 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -71,7 +67,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void playerRegister(AttachCapabilitiesEvent<Entity> event){
-        if(event.getObject() instanceof PlayerEntity){
+        if(event.getObject() instanceof Player){
             PlayerCapabilityManager provider = new PlayerCapabilityManager();
             event.addCapability(new ResourceLocation(VDM.MODID, "blackeyestatus"), provider);
         }
@@ -79,7 +75,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void entityRegister(AttachCapabilitiesEvent<Entity> event){
-        if(event.getObject() instanceof AnimalEntity || event.getObject() instanceof VillagerEntity){
+        if(event.getObject() instanceof Animal || event.getObject() instanceof Villager){
             EntityCapabilityManager provider = new EntityCapabilityManager();
             event.addCapability(new ResourceLocation(VDM.MODID, "entitycapabilities"), provider);
         }
@@ -87,46 +83,46 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void SoftSkin(LivingDamageEvent event){
-        if(event.getEntityLiving() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide()){
-            PlayerEntity target = (PlayerEntity) event.getEntityLiving();
+        if(event.getEntityLiving() instanceof Player && !event.getEntityLiving().level.isClientSide()){
+            Player target = (Player) event.getEntityLiving();
                 if(VDM.config.SOFTSKIN.get()){event.setAmount(event.getAmount() * 1.5f);}
         }
     }
 
     @SubscribeEvent
     public static void Fatigue(TickEvent.PlayerTickEvent event){
-        PlayerEntity playerEntity = event.player;
+        Player playerEntity = event.player;
         if(!playerEntity.level.isClientSide()){
                 if(VDM.config.FATIGUE.get()){
-                    ServerStatisticsManager serverstatisticsmanager = ((ServerPlayerEntity)playerEntity).getStats();
-                    int sleeptime = MathHelper.clamp(serverstatisticsmanager.getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)), 1, Integer.MAX_VALUE);
+                    ServerStatsCounter serverstatisticsmanager = ((ServerPlayer)playerEntity).getStats();
+                    int sleeptime = Mth.clamp(serverstatisticsmanager.getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)), 1, Integer.MAX_VALUE);
                     Random random = new Random();
                     int chance = random.nextInt(50000);
                     if(sleeptime > 72000 & sleeptime < 84000){
                         if(chance <= 12){
-                            playerEntity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 60*20, 0));
-                            playerEntity.addEffect(new EffectInstance(Effects.WEAKNESS, 60*20, 0));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60*20, 0));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60*20, 0));
                         }
                     }else if(sleeptime >= 84000 && sleeptime <= 96000){
                         if(chance <= 10){
-                            playerEntity.addEffect(new EffectInstance(Effects.CONFUSION, 60*20, 0));
-                            playerEntity.addEffect(new EffectInstance(Effects.HUNGER, 60*20, 0));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60*20, 0));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.HUNGER, 60*20, 0));
                         } if(chance <= 15){
-                            playerEntity.addEffect(new EffectInstance(Effects.DIG_SLOWDOWN, 45*20, 1));
-                            playerEntity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 60*20, 1));
-                            playerEntity.addEffect(new EffectInstance(Effects.WEAKNESS, 60*20, 1));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 45*20, 1));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60*20, 1));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60*20, 1));
                         }
                     }else if(sleeptime > 96000 && sleeptime <= 132000){
                         if(chance <= 10){
-                            playerEntity.addEffect(new EffectInstance(Effects.CONFUSION, 70*20, 0));
-                            playerEntity.addEffect(new EffectInstance(Effects.HUNGER, 70*20, 0));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 70*20, 0));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.HUNGER, 70*20, 0));
                         }if(chance <= 13){
-                            playerEntity.addEffect(new EffectInstance(Effects.BLINDNESS, 45*20, 0));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 45*20, 0));
                         }
                         if(chance <= 17){
-                            playerEntity.addEffect(new EffectInstance(Effects.DIG_SLOWDOWN, 45*20, 2));
-                            playerEntity.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 60*20, 2));
-                            playerEntity.addEffect(new EffectInstance(Effects.WEAKNESS, 60*20, 2));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 45*20, 2));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60*20, 2));
+                            playerEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60*20, 2));
                         }
                     }else if(sleeptime > 132000){
                         if (chance < 49000) playerEntity.hurt(Fatiguedamage.causeFatigueDamage(playerEntity), 1);
@@ -139,27 +135,27 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void Cannon(LivingDeathEvent event){
         if(!event.getEntityLiving().level.isClientSide()){
-            if(event.getEntityLiving() instanceof CreeperEntity){
-                CreeperEntity creeperEntity = (CreeperEntity) event.getEntityLiving();
+            if(event.getEntityLiving() instanceof Creeper){
+                Creeper creeperEntity = (Creeper) event.getEntityLiving();
                     if(VDM.config.CANNON.get()){
                         boolean loot = true;
                         if (event.getSource().getEntity() == creeperEntity){loot = false;} //creeper naturally exploded. No loot!
                         if (event.getEntityLiving().level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)){loot = false;}
-                        Explosion.Mode explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(creeperEntity.level, creeperEntity) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
+                        Explosion.BlockInteraction explosion$mode = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(creeperEntity.level, creeperEntity) ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE;
                         float f = creeperEntity.isPowered() ? 2.0F : 1.0F;
-                        Vector3d vector3d = new Vector3d(creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ());
+                        Vec3 vector3d = new Vec3(creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ());
                         creeperEntity.level.explode(creeperEntity, creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ(), (float)3 * f, explosion$mode);
-                        creeperEntity.remove();
+                        creeperEntity.remove(false);
                         //Phase 2 - artificial loot table.
                         if(loot){
                             Entity aggressor = event.getSource().getEntity();
-                            if(aggressor instanceof PlayerEntity || aggressor instanceof WolfEntity){
-                                ExperienceOrbEntity experienceOrbEntity = new ExperienceOrbEntity(EntityType.EXPERIENCE_ORB, aggressor.level);
+                            if(aggressor instanceof Player || aggressor instanceof Wolf){
+                                ExperienceOrb experienceOrbEntity = new ExperienceOrb(EntityType.EXPERIENCE_ORB, aggressor.level);
                                 experienceOrbEntity.value = 5;
                                 ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, aggressor.level);
                                 int maxgun = 2;
-                                if(aggressor instanceof PlayerEntity){
-                                    Map<Enchantment, Integer> map =  EnchantmentHelper.getEnchantments(((PlayerEntity) aggressor).getMainHandItem());
+                                if(aggressor instanceof Player){
+                                    Map<Enchantment, Integer> map =  EnchantmentHelper.getEnchantments(((Player) aggressor).getMainHandItem());
                                     if(map.containsKey(Enchantments.MOB_LOOTING)){
                                         maxgun = 2 + map.get(Enchantments.MOB_LOOTING);
                                     }
@@ -172,7 +168,7 @@ public class ForgeEvents {
                                 aggressor.level.addFreshEntity(experienceOrbEntity);
                                 aggressor.level.addFreshEntity(itemEntity);
                             }
-                            else if(aggressor instanceof SkeletonEntity){
+                            else if(aggressor instanceof Skeleton){
                                 ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, aggressor.level);
                                 Random random = new Random();
                                 int gunpowderamount = random.nextInt(3);
@@ -183,7 +179,7 @@ public class ForgeEvents {
                                 Disc.setPos(vector3d.x, vector3d.y, vector3d.z);
                                 aggressor.level.addFreshEntity(itemEntity);
                                 aggressor.level.addFreshEntity(Disc);
-                            }else if(aggressor instanceof CreeperEntity && ((CreeperEntity) aggressor).canDropMobsSkull()){
+                            }else if(aggressor instanceof Creeper && ((Creeper) aggressor).canDropMobsSkull()){
                                 ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, aggressor.level);
                                 Random random = new Random();
                                 int gunpowderamount = random.nextInt(3);
@@ -207,38 +203,38 @@ public class ForgeEvents {
         if(!event.getWorld().isClientSide() && event.getWorld().getServer().getPlayerCount() != 0){
                 if(VDM.config.SHIFT.get()) {
                     if (event.getEntity().getType() == EntityType.ZOMBIE) {
-                        ZombieEntity entity = (ZombieEntity) event.getEntity();
+                        Zombie entity = (Zombie) event.getEntity();
                         Random random = new Random();
-                        Vector3d vector3d = entity.position();
+                        Vec3 vector3d = entity.position();
 
-                        ItemStack mainHand = entity.getItemInHand(Hand.MAIN_HAND);
-                        ItemStack offHand = entity.getItemInHand(Hand.OFF_HAND);
-                        ItemStack Helm = entity.getItemBySlot(EquipmentSlotType.HEAD);
-                        ItemStack Chest = entity.getItemBySlot(EquipmentSlotType.CHEST);
-                        ItemStack Leg = entity.getItemBySlot(EquipmentSlotType.LEGS);
-                        ItemStack Boots = entity.getItemBySlot(EquipmentSlotType.FEET);
+                        ItemStack mainHand = entity.getItemInHand(InteractionHand.MAIN_HAND);
+                        ItemStack offHand = entity.getItemInHand(InteractionHand.OFF_HAND);
+                        ItemStack Helm = entity.getItemBySlot(EquipmentSlot.HEAD);
+                        ItemStack Chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+                        ItemStack Leg = entity.getItemBySlot(EquipmentSlot.LEGS);
+                        ItemStack Boots = entity.getItemBySlot(EquipmentSlot.FEET);
 
                         int chance = random.nextInt(12);
                         if (chance < 6) {
-                            DrownedEntity newMob = new DrownedEntity(EntityType.DROWNED, entity.level);
+                            Drowned newMob = new Drowned(EntityType.DROWNED, entity.level);
                             newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
-                            newMob.setItemInHand(Hand.MAIN_HAND, mainHand);
-                            newMob.setItemInHand(Hand.OFF_HAND, offHand);
-                            newMob.setItemSlot(EquipmentSlotType.HEAD, Helm);
-                            newMob.setItemSlot(EquipmentSlotType.CHEST, Chest);
-                            newMob.setItemSlot(EquipmentSlotType.LEGS, Leg);
-                            newMob.setItemSlot(EquipmentSlotType.FEET, Boots);
+                            newMob.setItemInHand(InteractionHand.MAIN_HAND, mainHand);
+                            newMob.setItemInHand(InteractionHand.OFF_HAND, offHand);
+                            newMob.setItemSlot(EquipmentSlot.HEAD, Helm);
+                            newMob.setItemSlot(EquipmentSlot.CHEST, Chest);
+                            newMob.setItemSlot(EquipmentSlot.LEGS, Leg);
+                            newMob.setItemSlot(EquipmentSlot.FEET, Boots);
                             entity.level.addFreshEntity(newMob);
                             entity.setPos(entity.getX(), -1, entity.getZ());
                             entity.kill();
                         } else if (chance < 11) {
-                            HuskEntity newMob = new HuskEntity(EntityType.HUSK, entity.level);
+                            Husk newMob = new Husk(EntityType.HUSK, entity.level);
                             newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
                             entity.level.addFreshEntity(newMob);
                             entity.setPos(entity.getX(), -1, entity.getZ());
                             entity.kill();
                         } else {
-                            ZombieVillagerEntity newMob = new ZombieVillagerEntity(EntityType.ZOMBIE_VILLAGER, entity.level);
+                            ZombieVillager newMob = new ZombieVillager(EntityType.ZOMBIE_VILLAGER, entity.level);
                             newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
                             entity.level.addFreshEntity(newMob);
                             entity.setPos(entity.getX(), -1, entity.getZ());
@@ -246,37 +242,37 @@ public class ForgeEvents {
                         }
                     }
                     if (event.getEntity().getType() == EntityType.SKELETON) {
-                        SkeletonEntity entity = (SkeletonEntity) event.getEntity();
-                        Vector3d vector3d = entity.position();
+                        Skeleton entity = (Skeleton) event.getEntity();
+                        Vec3 vector3d = entity.position();
 
-                        ItemStack mainHand = entity.getItemInHand(Hand.MAIN_HAND);
-                        ItemStack offHand = entity.getItemInHand(Hand.OFF_HAND);
-                        ItemStack Helm = entity.getItemBySlot(EquipmentSlotType.HEAD);
-                        ItemStack Chest = entity.getItemBySlot(EquipmentSlotType.CHEST);
-                        ItemStack Leg = entity.getItemBySlot(EquipmentSlotType.LEGS);
-                        ItemStack Boots = entity.getItemBySlot(EquipmentSlotType.FEET);
+                        ItemStack mainHand = entity.getItemInHand(InteractionHand.MAIN_HAND);
+                        ItemStack offHand = entity.getItemInHand(InteractionHand.OFF_HAND);
+                        ItemStack Helm = entity.getItemBySlot(EquipmentSlot.HEAD);
+                        ItemStack Chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+                        ItemStack Leg = entity.getItemBySlot(EquipmentSlot.LEGS);
+                        ItemStack Boots = entity.getItemBySlot(EquipmentSlot.FEET);
 
-                        StrayEntity newMob = new StrayEntity(EntityType.STRAY, entity.level);
+                        Stray newMob = new Stray(EntityType.STRAY, entity.level);
                         newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
 
                         newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
-                        newMob.setItemInHand(Hand.MAIN_HAND, mainHand);
-                        newMob.setItemInHand(Hand.OFF_HAND, offHand);
-                        newMob.setItemSlot(EquipmentSlotType.HEAD, Helm);
-                        newMob.setItemSlot(EquipmentSlotType.CHEST, Chest);
-                        newMob.setItemSlot(EquipmentSlotType.LEGS, Leg);
-                        newMob.setItemSlot(EquipmentSlotType.FEET, Boots);
+                        newMob.setItemInHand(InteractionHand.MAIN_HAND, mainHand);
+                        newMob.setItemInHand(InteractionHand.OFF_HAND, offHand);
+                        newMob.setItemSlot(EquipmentSlot.HEAD, Helm);
+                        newMob.setItemSlot(EquipmentSlot.CHEST, Chest);
+                        newMob.setItemSlot(EquipmentSlot.LEGS, Leg);
+                        newMob.setItemSlot(EquipmentSlot.FEET, Boots);
 
                         entity.setPos(entity.getX(), -1, entity.getZ());
                         entity.level.addFreshEntity(newMob);
                         entity.kill();
                     }
                     if (event.getEntity().getType() == EntityType.CREEPER) {
-                        CreeperEntity creeperEntity = (CreeperEntity) event.getEntity();
+                        Creeper creeperEntity = (Creeper) event.getEntity();
                         if(creeperEntity.isPowered()){return;}
                         else{
                             try {
-                                creeperEntity.getEntityData().set(ObfuscationReflectionHelper.getPrivateValue(CreeperEntity.class, creeperEntity, "field_184714_b"), true);
+                                creeperEntity.getEntityData().set(ObfuscationReflectionHelper.getPrivateValue(Creeper.class, creeperEntity, "f_32274_"), true);
                             }catch (NullPointerException e){
                                 e.printStackTrace();
                             }
@@ -289,8 +285,8 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void BlackEye(LivingHealEvent event){
         if(!event.getEntity().level.isClientSide()){
-            if(event.getEntity() instanceof PlayerEntity){
-                PlayerEntity playerEntity = (PlayerEntity) event.getEntity();
+            if(event.getEntity() instanceof Player){
+                Player playerEntity = (Player) event.getEntity();
                 if(VDM.config.BLACKEYE.get()) {
                     playerEntity.getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
                         if(h.getBlackEyeStatus()){ //user has a black eye
@@ -305,8 +301,8 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void BlackEyeApplication(LivingDamageEvent event){
-        if(event.getEntityLiving() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide()){
-            PlayerEntity playerEntity = (PlayerEntity) event.getEntityLiving();
+        if(event.getEntityLiving() instanceof Player && !event.getEntityLiving().level.isClientSide()){
+            Player playerEntity = (Player) event.getEntityLiving();
             if(VDM.config.BLACKEYE.get()){
                 playerEntity.getCapability(PlayerCapability.INSTANCE).ifPresent(h->{
                     h.setBlackEyeStatus(true);
@@ -317,11 +313,11 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void BlackEyeRemoval(LivingDamageEvent event){
-        if(event.getSource().getEntity() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide()){
-            PlayerEntity aggressor = (PlayerEntity) event.getSource().getEntity();
+        if(event.getSource().getEntity() instanceof Player && !event.getEntityLiving().level.isClientSide()){
+            Player aggressor = (Player) event.getSource().getEntity();
             DamageSource damageSource = event.getSource();
             if(!damageSource.isExplosion() && !damageSource.isFire() && !damageSource.isMagic() && !damageSource.isProjectile() && aggressor != event.getEntityLiving()) {//damage source is (probably) melee
-                if (event.getEntityLiving() instanceof MonsterEntity || event.getEntityLiving() instanceof PlayerEntity) {
+                if (event.getEntityLiving() instanceof Monster || event.getEntityLiving() instanceof Player) {
                     aggressor.getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
                         h.setBlackEyeStatus(false);
                     });
@@ -337,11 +333,11 @@ public class ForgeEvents {
                     if (VDM.config.VENOM.get()) {
                         Difficulty level = event.getEntityLiving().level.getDifficulty();
                         if (level == Difficulty.EASY) {
-                            event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 5 * 20, 0));
+                            event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.POISON, 5 * 20, 0));
                         } else if (level == Difficulty.NORMAL) {
-                            event.getEntityLiving().addEffect(new EffectInstance(Effects.WITHER, 2 * 20, 0));
+                            event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.WITHER, 2 * 20, 0));
                         } else if (level == Difficulty.HARD) {
-                            event.getEntityLiving().addEffect(new EffectInstance(Effects.WITHER, 5 * 20, 0));
+                            event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.WITHER, 5 * 20, 0));
                         }
                     }
             }
@@ -349,11 +345,11 @@ public class ForgeEvents {
                     if (VDM.config.VENOM.get()) {
                         Difficulty level = event.getEntityLiving().level.getDifficulty();
                         if (level == Difficulty.EASY) {
-                            event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 2 * 20, 0));
+                            event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.POISON, 2 * 20, 0));
                         } else if (level == Difficulty.NORMAL) {
-                            event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 4 * 20, 0));
+                            event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.POISON, 4 * 20, 0));
                         } else if (level == Difficulty.HARD) {
-                            event.getEntityLiving().addEffect(new EffectInstance(Effects.POISON, 6 * 20, 0));
+                            event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.POISON, 6 * 20, 0));
                         }
                     }
             }
@@ -401,14 +397,14 @@ public class ForgeEvents {
         if(!event.getEntityLiving().level.isClientSide() && event.getEntity() instanceof LivingEntity) {
             EntityType eType = event.getEntityLiving().getType();
             if (eType == EntityType.PIG || eType == EntityType.SHEEP || eType == EntityType.COW || eType == EntityType.MOOSHROOM || eType == EntityType.CHICKEN) {
-                if (VDM.config.KARMICJUSTICE.get() && event.getSource().getEntity() instanceof PlayerEntity) {
+                if (VDM.config.KARMICJUSTICE.get() && event.getSource().getEntity() instanceof Player) {
                     AtomicBoolean isExplodey = new AtomicBoolean(false);
                     event.getEntityLiving().getCapability(EntityCapability.INSTANCE).ifPresent(h->{
                         isExplodey.set(h.getRetaliationStatus());
                     });
                     if(isExplodey.get()) {
-                        event.getEntityLiving().level.explode(event.getEntityLiving(), event.getEntityLiving().getX(), event.getEntityLiving().getY(), event.getEntityLiving().getZ(), 2f, Explosion.Mode.NONE);
-                        event.getEntityLiving().remove();
+                        event.getEntityLiving().level.explode(event.getEntityLiving(), event.getEntityLiving().getX(), event.getEntityLiving().getY(), event.getEntityLiving().getZ(), 2f, Explosion.BlockInteraction.NONE);
+                        event.getEntityLiving().remove(true);
                     }
                 }
             }
@@ -417,15 +413,17 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void Hardened(EntityJoinWorldEvent event){
-        if(!event.getEntity().level.isClientSide() && event.getEntity() instanceof MonsterEntity){
+        if(!event.getEntity().level.isClientSide() && event.getEntity() instanceof Monster){
             if(VDM.config.HARDENED.get()) {
-                float health = ((MonsterEntity) event.getEntity()).getHealth() * 0.5f;
-                ModifiableAttributeInstance modifiableAttributeInstance = ((MonsterEntity) event.getEntity()).getAttribute(Attributes.MAX_HEALTH);
+                float health = ((Monster) event.getEntity()).getHealth() * 0.5f;
+                AttributeInstance modifiableAttributeInstance = ((Monster) event.getEntity()).getAttribute(Attributes.MAX_HEALTH);
                 if (modifiableAttributeInstance == null) {
                     return;
                 }
-                modifiableAttributeInstance.addTransientModifier(new AttributeModifier(UUID.fromString("D6F0BA2-1186-46AC-B896-C61C5CEE99CC"), "Hardened health boost", health, AttributeModifier.Operation.ADDITION));
-                ((MonsterEntity) event.getEntity()).setHealth(((MonsterEntity) event.getEntity()).getHealth() * 1.5f);
+                if(modifiableAttributeInstance.getModifiers().size() == 0) {
+                    modifiableAttributeInstance.addTransientModifier(new AttributeModifier(UUID.fromString("D6F0BA2-1186-46AC-B896-C61C5CEE99CC"), "Hardened health boost", health, AttributeModifier.Operation.ADDITION));
+                    ((Monster) event.getEntity()).setHealth(((Monster) event.getEntity()).getHealth() * 1.5f);
+                }
             }
         }
     }
@@ -435,9 +433,9 @@ public class ForgeEvents {
         if(!event.getEntity().level.isClientSide()){
             if(VDM.config.ANGER.get()) {
                 if (event.getEntity().getType().equals(EntityType.SKELETON) || event.getEntity().getType().equals(EntityType.STRAY)) {
-                    AbstractSkeletonEntity abstractSkeletonEntity = (AbstractSkeletonEntity) event.getEntity();
+                    AbstractSkeleton abstractSkeletonEntity = (AbstractSkeleton) event.getEntity();
                     try {
-                        RangedBowAttackGoal<AbstractSkeletonEntity> rangedBowAttackGoal = ObfuscationReflectionHelper.getPrivateValue(AbstractSkeletonEntity.class, abstractSkeletonEntity, "field_85037_d");
+                        RangedBowAttackGoal<AbstractSkeleton> rangedBowAttackGoal = ObfuscationReflectionHelper.getPrivateValue(AbstractSkeleton.class, abstractSkeletonEntity, "f_32130_");
                         if (abstractSkeletonEntity.level.getDifficulty() != Difficulty.HARD)
                             rangedBowAttackGoal.setMinAttackInterval(30);
                         else rangedBowAttackGoal.setMinAttackInterval(15);
@@ -447,10 +445,10 @@ public class ForgeEvents {
 
                 }
                 if(event.getEntity().getType().equals(EntityType.PILLAGER)){
-                    PillagerEntity pillagerEntity = (PillagerEntity) event.getEntity();
-                    Set<PrioritizedGoal> prioritizedGoals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, pillagerEntity.goalSelector, "field_220892_d");
+                    Pillager pillagerEntity = (Pillager) event.getEntity();
+                    Set<WrappedGoal> prioritizedGoals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, pillagerEntity.goalSelector, "f_25345_");
                     Goal toremove = null;
-                    for(PrioritizedGoal prioritizedGoal : prioritizedGoals){
+                    for(WrappedGoal prioritizedGoal : prioritizedGoals){
                         if(prioritizedGoal.getGoal() instanceof RangedCrossbowAttackGoal){
                             toremove = prioritizedGoal.getGoal();
                             if(toremove != null) break;
@@ -461,10 +459,10 @@ public class ForgeEvents {
                     pillagerEntity.goalSelector.addGoal(3, new CrossbowAngerManagement(pillagerEntity, 1.5D, 8.0F));
                     }
                 }if(event.getEntity().getType().equals(EntityType.WITCH)){
-                    WitchEntity witchEntity = (WitchEntity) event.getEntity();
-                    Set<PrioritizedGoal> prioritizedGoals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, witchEntity.goalSelector, "field_220892_d");
+                    Witch witchEntity = (Witch) event.getEntity();
+                    Set<WrappedGoal> prioritizedGoals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, witchEntity.goalSelector, "f_25345_");
                     Goal toremove = null;
-                    for(PrioritizedGoal prioritizedGoal : prioritizedGoals) {
+                    for(WrappedGoal prioritizedGoal : prioritizedGoals) {
                         if (prioritizedGoal.getGoal() instanceof RangedAttackGoal) {
                             toremove = prioritizedGoal.getGoal();
                             if (toremove != null) break;
@@ -486,12 +484,12 @@ public class ForgeEvents {
         if (!event.getEntity().level.isClientSide()){
             if(VDM.config.UNSTABLE.get()) {
                 if (event.getEntity().getType() == EntityType.GHAST) {
-                    GhastEntity ghastEntity = (GhastEntity) event.getEntity();
-                    ObfuscationReflectionHelper.setPrivateValue(GhastEntity.class, ghastEntity, 5, "field_92014_j");
+                    Ghast ghastEntity = (Ghast) event.getEntity();
+                    ObfuscationReflectionHelper.setPrivateValue(Ghast.class, ghastEntity, 5, "f_32722_");
                 }
                 if (event.getEntity().getType().equals(EntityType.CREEPER)) {
-                    CreeperEntity creeperEntity = (CreeperEntity) event.getEntity();
-                    ObfuscationReflectionHelper.setPrivateValue(CreeperEntity.class, creeperEntity, 5, "field_82226_g");
+                    Creeper creeperEntity = (Creeper) event.getEntity();
+                    ObfuscationReflectionHelper.setPrivateValue(Creeper.class, creeperEntity, 5, "f_32272_");
                 }
             }
         }
@@ -501,7 +499,7 @@ public class ForgeEvents {
     public static void Kinetic(LivingDamageEvent event){
         if(!event.getEntityLiving().level.isClientSide()){
             if(VDM.config.KINETIC.get()) {
-                if (event.getEntityLiving() instanceof PlayerEntity) {
+                if (event.getEntityLiving() instanceof Player) {
                     DamageSource damageSource = event.getSource();
                     float damage = event.getAmount();
                     if (damageSource.isFire()) {
@@ -519,7 +517,7 @@ public class ForgeEvents {
                     event.getEntityLiving().getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
                         h.setKineticBuildup(finalDamage);
                     });
-                } else if (event.getSource().getDirectEntity() instanceof PlayerEntity && event.getEntity() instanceof LivingEntity) {
+                } else if (event.getSource().getDirectEntity() instanceof Player && event.getEntity() instanceof LivingEntity) {
                     AtomicReference<Float> atomicFloat = new AtomicReference<>(0f);
                     event.getSource().getDirectEntity().getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
                         atomicFloat.set(h.getKineticBuildup());
@@ -529,7 +527,7 @@ public class ForgeEvents {
                     event.setAmount(event.getAmount() + moreDamage);
                 }
             }else{
-                if (event.getEntityLiving() instanceof PlayerEntity) {
+                if (event.getEntityLiving() instanceof Player) {
                     event.getEntityLiving().getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
                         h.setKineticBuildup(h.getKineticBuildup() * -1);
                     });
@@ -541,10 +539,10 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void Undying(LivingDeathEvent event){
         if(!event.getEntityLiving().level.isClientSide()){
-            if (event.getEntityLiving() instanceof PlayerEntity && VDM.config.UNDYING.get()){
+            if (event.getEntityLiving() instanceof Player && VDM.config.UNDYING.get()){
                 event.setCanceled(true);
-                ((PlayerEntity) event.getEntityLiving()).awardStat(Stats.DEATHS, 1);
-                ((PlayerEntity) event.getEntityLiving()).getScoreboard().forAllObjectives(ScoreCriteria.DEATH_COUNT, event.getEntityLiving().getScoreboardName(), Score::increment);
+                ((Player) event.getEntityLiving()).awardStat(Stats.DEATHS, 1);
+                ((Player) event.getEntityLiving()).getScoreboard().forAllObjectives(ObjectiveCriteria.DEATH_COUNT, event.getEntityLiving().getScoreboardName(), Score::increment);
                 event.getEntityLiving().setHealth(event.getEntityLiving().getMaxHealth());
 
             }
@@ -568,12 +566,12 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void Warranty(PlayerDestroyItemEvent event){
-        if(!event.getPlayer().level.isClientSide() && (event.getOriginal().getItem() instanceof ToolItem || event.getOriginal().getItem() instanceof FlintAndSteelItem) && VDM.config.WARRANTY.get()){
+        if(!event.getPlayer().level.isClientSide() && (event.getOriginal().getItem() instanceof DiggerItem || event.getOriginal().getItem() instanceof FlintAndSteelItem) && VDM.config.WARRANTY.get()){
         event.getOriginal().setDamageValue(0);
-        CompoundNBT nbt = event.getOriginal().serializeNBT();
+        CompoundTag nbt = event.getOriginal().serializeNBT();
         ItemStack replacement = new ItemStack(event.getOriginal().getItem(), 1);
         replacement.deserializeNBT(nbt);
-        Vector3d vector3d = event.getPlayer().position();
+        Vec3 vector3d = event.getPlayer().position();
         ItemEntity itemEntity = new ItemEntity(EntityType.ITEM, event.getPlayer().level);
         itemEntity.setItem(replacement);
         itemEntity.setPos(vector3d.x, vector3d.y, vector3d.z);
@@ -582,7 +580,7 @@ public class ForgeEvents {
     }
 
     private static void agecheck(int age, LivingEntity livingEntity){
-        if(age >= 4) livingEntity.remove();
+        if(age >= 4) livingEntity.remove(true);
     }
 
     private static Item MusicDisc(){

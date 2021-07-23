@@ -1,7 +1,7 @@
 package com.cartoonishvillain.vdm.Capabilities.EntityCapabilities;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
-public class EntityCapabilityManager implements IEntityCapability, ICapabilityProvider, INBTSerializable<CompoundNBT> {
+public class EntityCapabilityManager implements IEntityCapability, ICapabilityProvider, INBTSerializable<CompoundTag> {
     protected boolean retaliation = false;
     protected int age = 0;
     public final LazyOptional<IEntityCapability> holder = LazyOptional.of(()->this);
@@ -41,15 +41,15 @@ public class EntityCapabilityManager implements IEntityCapability, ICapabilityPr
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT tag = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
         tag.putBoolean("retaliation", retaliation);
         tag.putInt("age", age);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         retaliation = nbt.getBoolean("retaliation");
         age = nbt.getInt("age");
     }

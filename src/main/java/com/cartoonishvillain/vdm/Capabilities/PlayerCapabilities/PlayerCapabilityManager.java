@@ -1,7 +1,7 @@
 package com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
-public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityProvider, INBTSerializable<CompoundNBT> {
+public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityProvider, INBTSerializable<CompoundTag> {
     protected boolean blackEye = false;
     protected float kineticBuildup = 0f;
     public final LazyOptional<IPlayerCapability> holder = LazyOptional.of(()->this);
@@ -38,15 +38,15 @@ public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityPr
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT tag = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
         tag.putBoolean("blackeyestatus", blackEye);
         tag.putFloat("kineticbuildup", kineticBuildup);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         blackEye = nbt.getBoolean("blackeyestatus");
         kineticBuildup = nbt.getFloat("kineticbuildup");
     }

@@ -5,30 +5,30 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 
-public class listCommand implements Command<CommandSource> {
+public class listCommand implements Command<CommandSourceStack> {
     private static final listCommand CMD = new listCommand();
 
-    public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher){
+    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher){
         return Commands.literal("list")
                 .requires(cs -> cs.hasPermission(0))
                 .executes(CMD);
     }
 
     @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.list").withStyle(TextFormatting.YELLOW, TextFormatting.BOLD), false);
-        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.increasing").withStyle(TextFormatting.RED, TextFormatting.BOLD), false);
-        context.getSource().sendSuccess(new StringTextComponent("Aging, Anger, Black Eye, Cannon, Fatigue, Flammable, Hardened, Karmic Justice, Shift, Soft Skin, Unstable, Venom"), false);
-        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.heroic"), false);
-        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.decreasing").withStyle(TextFormatting.BLUE, TextFormatting.BOLD), false);
-        context.getSource().sendSuccess(new StringTextComponent("Blacksmithing, Fuel Efficient, Kinetic, Undying, Warranty"), false);
-        context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipliers.keys"), false);
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.list").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD), false);
+        context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.increasing").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
+        context.getSource().sendSuccess(new TextComponent("Aging, Anger, Black Eye, Cannon, Fatigue, Flammable, Hardened, Karmic Justice, Shift, Soft Skin, Unstable, Venom"), false);
+        context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.heroic"), false);
+        context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.decreasing").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD), false);
+        context.getSource().sendSuccess(new TextComponent("Blacksmithing, Fuel Efficient, Kinetic, Undying, Warranty"), false);
+        context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.keys"), false);
 
         return 0;
     }
