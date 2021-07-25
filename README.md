@@ -1,4 +1,4 @@
-# VillanousDifficultyMultipliers
+# VillainousDifficultyMultipliers
 Like Halo's skull system, but in minecraft.
 
 The halo franchise since almost the very beginning has had a system where you can activate "skulls" that modify the game in various ways depending on what you've activated.
