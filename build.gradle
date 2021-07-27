@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.17.1-1.4.0.1'
+version = '1.17.1-1.4.0.2'
 group = 'com.cartoonishvillain.villainousdifficultymultipliers' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'villainousdifficultymultipliers'
 

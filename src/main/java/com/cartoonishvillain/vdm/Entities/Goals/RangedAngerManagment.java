@@ -14,9 +14,9 @@ public class RangedAngerManagment extends RangedAttackGoal {
         super.tick();
         int delay = 0;
         try{
-            delay = ObfuscationReflectionHelper.getPrivateValue(RangedAttackGoal.class, this, "field_75320_d");}catch (NullPointerException e){e.printStackTrace();}
+            delay = ObfuscationReflectionHelper.getPrivateValue(RangedAttackGoal.class, this, "f_25760_");}catch (NullPointerException e){e.printStackTrace();}
         if(delay > 25){delay = 25;}
-        ObfuscationReflectionHelper.setPrivateValue(RangedAttackGoal.class, this, delay, "field_75320_d");
+        ObfuscationReflectionHelper.setPrivateValue(RangedAttackGoal.class, this, delay, "f_25760_");
 
     }
 }

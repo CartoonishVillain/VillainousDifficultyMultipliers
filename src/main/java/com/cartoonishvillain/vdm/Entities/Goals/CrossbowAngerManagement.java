@@ -14,8 +14,8 @@ public class CrossbowAngerManagement extends RangedCrossbowAttackGoal {
         super.tick();
         int delay = 0;
         try{
-        delay = ObfuscationReflectionHelper.getPrivateValue(RangedCrossbowAttackGoal.class, this, "field_220753_f");}catch (NullPointerException e){e.printStackTrace();}
+        delay = ObfuscationReflectionHelper.getPrivateValue(RangedCrossbowAttackGoal.class, this, "f_22771_");}catch (NullPointerException e){e.printStackTrace();}
         if(delay > 13){delay = 13;}
-        ObfuscationReflectionHelper.setPrivateValue(RangedCrossbowAttackGoal.class, this, delay, "field_220753_f");
+        ObfuscationReflectionHelper.setPrivateValue(RangedCrossbowAttackGoal.class, this, delay, "f_22771_");
     }
 }
