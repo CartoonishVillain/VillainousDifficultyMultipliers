@@ -145,7 +145,7 @@ public class ForgeEvents {
                         float f = creeperEntity.isPowered() ? 2.0F : 1.0F;
                         Vec3 vector3d = new Vec3(creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ());
                         creeperEntity.level.explode(creeperEntity, creeperEntity.getX(), creeperEntity.getY(), creeperEntity.getZ(), (float)3 * f, explosion$mode);
-                        creeperEntity.remove(false);
+                        creeperEntity.remove(Entity.RemovalReason.KILLED);
                         //Phase 2 - artificial loot table.
                         if(loot){
                             Entity aggressor = event.getSource().getEntity();
@@ -404,7 +404,7 @@ public class ForgeEvents {
                     });
                     if(isExplodey.get()) {
                         event.getEntityLiving().level.explode(event.getEntityLiving(), event.getEntityLiving().getX(), event.getEntityLiving().getY(), event.getEntityLiving().getZ(), 2f, Explosion.BlockInteraction.NONE);
-                        event.getEntityLiving().remove(true);
+                        event.getEntityLiving().remove(Entity.RemovalReason.KILLED);
                     }
                 }
             }
@@ -580,7 +580,7 @@ public class ForgeEvents {
     }
 
     private static void agecheck(int age, LivingEntity livingEntity){
-        if(age >= 4) livingEntity.remove(true);
+        if(age >= 4) livingEntity.remove(Entity.RemovalReason.DISCARDED);
     }
 
     private static Item MusicDisc(){
