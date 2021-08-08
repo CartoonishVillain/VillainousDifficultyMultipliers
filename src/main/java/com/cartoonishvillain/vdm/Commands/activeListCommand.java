@@ -45,6 +45,7 @@ public class activeListCommand implements Command<CommandSourceStack> {
             if(VDM.config.SOFTSKIN.get()) {string.set(string.get() + ChatFormatting.RED + "Soft Skin, "); count.set(count.get()+1);}
             if(VDM.config.UNDYING.get()) {string.set(string.get() + ChatFormatting.BLUE + "Undying, "); count.set(count.get()+1);}
             if(VDM.config.UNSTABLE.get()) {string.set(string.get() + ChatFormatting.RED + "Unstable, "); count.set(count.get()+1);}
+            if(VDM.config.VEGETARIAN.get()) {string.set(string.get() + ChatFormatting.RED + "Vegetarian, "); count.set(count.get()+1);}
             if(VDM.config.VENOM.get()) {string.set(string.get() + ChatFormatting.RED + "Venom, "); count.set(count.get()+1);}
             if(VDM.config.WARRANTY.get()) {string.set(string.get() + ChatFormatting.BLUE + "Warranty, "); count.set(count.get()+1);}
 

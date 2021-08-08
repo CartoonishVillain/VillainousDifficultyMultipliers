@@ -9,7 +9,9 @@ import com.cartoonishvillain.vdm.Entities.Goals.CrossbowAngerManagement;
 import com.cartoonishvillain.vdm.Entities.Goals.RangedAngerManagment;
 import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerStatsCounter;
@@ -31,6 +33,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -576,6 +579,20 @@ public class ForgeEvents {
         itemEntity.setItem(replacement);
         itemEntity.setPos(vector3d.x, vector3d.y, vector3d.z);
         event.getPlayer().level.addFreshEntity(itemEntity);
+        }
+    }
+
+    @SubscribeEvent
+    public static void Vegetarian(LivingEntityUseItemEvent.Finish event){
+        if(!event.getEntity().level.isClientSide() && event.getEntityLiving() instanceof Player && event.getItem().getItem().isEdible()){
+            FoodProperties foodProperties = event.getItem().getItem().getFoodProperties();
+            if(foodProperties.isMeat()){
+                event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 15*20, 0));
+                event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.HUNGER, 30*20, 1));
+                event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.CONFUSION, 15*20, 0));
+                event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 30*20, 0));
+                event.getEntityLiving().sendMessage(new TranslatableComponent("status.villainousdifficultymultipliers.vegetarian").withStyle(ChatFormatting.RED), event.getEntityLiving().getUUID());
+            }
         }
     }
 
