@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 
 public class EntityCapabilityManager implements IEntityCapability, ICapabilityProvider, INBTSerializable<CompoundTag> {
     protected boolean retaliation = false;
+    protected boolean wrong = false;
     protected int age = 0;
     public final LazyOptional<IEntityCapability> holder = LazyOptional.of(()->this);
     @Override
@@ -32,6 +33,12 @@ public class EntityCapabilityManager implements IEntityCapability, ICapabilityPr
     public void setAge(int age) {
         this.age = age;
     }
+
+    @Override
+    public boolean getWrongStatus() {return wrong;}
+
+    @Override
+    public void setWrongStatus(boolean set) {this.wrong = set;}
 
     @Nonnull
     @Override

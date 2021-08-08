@@ -115,6 +115,10 @@ public class activateMultiplierCommand implements Command<CommandSourceStack> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.vegetarian"));
                 VDM.config.VEGETARIAN.set(true);
                 break;
+            case "wrong":
+                broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.wrong"));
+                VDM.config.WRONG.set(true);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.allwarning").withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.allon"));
@@ -131,6 +135,7 @@ public class activateMultiplierCommand implements Command<CommandSourceStack> {
                 VDM.config.UNSTABLE.set(true);
                 VDM.config.FLAMMABLE.set(true);
                 VDM.config.VEGETARIAN.set(true);
+                VDM.config.WRONG.set(true);
                 break;
             case "keystothecity":
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.keysallwarning").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD));

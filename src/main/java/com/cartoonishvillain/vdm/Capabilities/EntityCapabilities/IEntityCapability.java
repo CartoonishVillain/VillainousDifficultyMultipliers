@@ -5,4 +5,6 @@ public interface IEntityCapability {
     void setRetaliationStatus(boolean set);
     int getAge();
     void setAge(int age);
+    boolean getWrongStatus();
+    void setWrongStatus(boolean set);
 }

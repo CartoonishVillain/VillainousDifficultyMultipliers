@@ -20,6 +20,8 @@ public class ServerConfig {
     public ConfigHelper.ConfigValueListener<Boolean> UNSTABLE;
     public ConfigHelper.ConfigValueListener<Boolean> FLAMMABLE;
     public ConfigHelper.ConfigValueListener<Boolean> VEGETARIAN;
+    public ConfigHelper.ConfigValueListener<Boolean> WRONG;
+
 
     public ConfigHelper.ConfigValueListener<Boolean> KINETIC;
     public ConfigHelper.ConfigValueListener<Boolean> UNDYING;
@@ -43,6 +45,7 @@ public class ServerConfig {
         this.UNSTABLE = subscriber.subscribe(builder.comment("Creeper explosions and Ghast fireballs have a larger explosion radius. For all your mass terrain destruction needs.").define("unstableMultiplier", false));
         this.FLAMMABLE = subscriber.subscribe(builder.comment("Entities on fire will stay on fire until water is applied (or they have died)").define("flammableMultiplier", false));
         this.VEGETARIAN = subscriber.subscribe(builder.comment("Eating meat makes you feel sick to your stomach. Whether or not it's for moral reasons, health reasons, or anything in between.").define("vegetarianMultiplier", false));
+        this.WRONG = subscriber.subscribe(builder.comment("That's just... Wrong - Some neutral mobs may have more aggression towards you.").define("wrongMultiplier", false));
         builder.pop();
 
         builder.comment("Enabled or Disable Difficulty Decreasing Multipliers. True is activated, False is deactivated").push(SCATEGORY_DIFFICULTY_DECREASING);

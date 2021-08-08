@@ -48,6 +48,8 @@ public class activeListCommand implements Command<CommandSourceStack> {
             if(VDM.config.VEGETARIAN.get()) {string.set(string.get() + ChatFormatting.RED + "Vegetarian, "); count.set(count.get()+1);}
             if(VDM.config.VENOM.get()) {string.set(string.get() + ChatFormatting.RED + "Venom, "); count.set(count.get()+1);}
             if(VDM.config.WARRANTY.get()) {string.set(string.get() + ChatFormatting.BLUE + "Warranty, "); count.set(count.get()+1);}
+            if(VDM.config.WRONG.get()) {string.set(string.get() + ChatFormatting.RED + "Wrong, "); count.set(count.get()+1);}
+
 
         String finalString = string.toString();
         if(finalString.length() > 0){

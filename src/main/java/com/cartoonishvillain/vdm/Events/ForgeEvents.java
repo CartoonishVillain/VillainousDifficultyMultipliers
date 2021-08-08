@@ -27,11 +27,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -78,7 +77,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void entityRegister(AttachCapabilitiesEvent<Entity> event){
-        if(event.getObject() instanceof Animal || event.getObject() instanceof Villager){
+        if(event.getObject() instanceof LivingEntity){
             EntityCapabilityManager provider = new EntityCapabilityManager();
             event.addCapability(new ResourceLocation(VDM.MODID, "entitycapabilities"), provider);
         }
@@ -584,7 +583,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void Vegetarian(LivingEntityUseItemEvent.Finish event){
-        if(!event.getEntity().level.isClientSide() && event.getEntityLiving() instanceof Player && event.getItem().getItem().isEdible()){
+        if(!event.getEntity().level.isClientSide() && event.getEntityLiving() instanceof Player && event.getItem().getItem().isEdible() && VDM.config.VEGETARIAN.get()){
             FoodProperties foodProperties = event.getItem().getItem().getFoodProperties();
             if(foodProperties.isMeat()){
                 event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 15*20, 0));
@@ -592,6 +591,46 @@ public class ForgeEvents {
                 event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.CONFUSION, 15*20, 0));
                 event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 30*20, 0));
                 event.getEntityLiving().sendMessage(new TranslatableComponent("status.villainousdifficultymultipliers.vegetarian").withStyle(ChatFormatting.RED), event.getEntityLiving().getUUID());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void seedWrong(EntityJoinWorldEvent event){
+        Entity e = event.getEntity();
+        if (!e.level.isClientSide() && e instanceof LivingEntity){
+            EntityType eType = e.getType();
+            if(eType == EntityType.ENDERMAN || eType == EntityType.ZOMBIFIED_PIGLIN || eType == EntityType.WOLF || eType == EntityType.BEE || eType == EntityType.LLAMA){
+                Random random = new Random();
+                int chance = random.nextInt(30);
+                if(chance <= 1) e.getCapability(EntityCapability.INSTANCE).ifPresent(h->{
+                    h.setWrongStatus(true);
+                });
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void activateWrong(LivingEvent.LivingUpdateEvent event){
+        LivingEntity livingEntity = event.getEntityLiving();
+        if(livingEntity.tickCount == 100 && livingEntity instanceof Mob && VDM.config.WRONG.get()) {
+            AtomicBoolean wrongStatus = new AtomicBoolean(false);
+            livingEntity.getCapability(EntityCapability.INSTANCE).ifPresent(h -> {
+                wrongStatus.set(h.getWrongStatus());
+            });
+            EntityType eType = livingEntity.getType();
+            if (!livingEntity.level.isClientSide() && wrongStatus.get()){
+                Set<WrappedGoal> prioritizedGoals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, ((Mob) livingEntity).targetSelector, "f_25345_");
+            ArrayList<Goal> toRemove = new ArrayList<>();
+            if(prioritizedGoals != null) {
+                for (WrappedGoal prioritizedGoal : prioritizedGoals) {
+                    toRemove.add(prioritizedGoal.getGoal());
+                }
+            }
+            for(Goal goal : toRemove){
+                ((Mob) livingEntity).targetSelector.removeGoal(goal);
+            }
+                    ((Mob) livingEntity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<Player>((Mob) livingEntity, Player.class, true, false));
             }
         }
     }

@@ -115,6 +115,10 @@ public class checkMultiplierCommand implements Command<CommandSourceStack> {
                 context.getSource().sendSuccess(new TextComponent(ChatFormatting.BOLD + "-=Vegetarian=-"), false);
                 context.getSource().sendSuccess(new TranslatableComponent("check.villainousdifficultymultipliers.vegetarian"), false);
                 break;
+            case "wrong":
+                context.getSource().sendSuccess(new TextComponent(ChatFormatting.BOLD + "-=Wrong=-"), false);
+                context.getSource().sendSuccess(new TranslatableComponent("check.villainousdifficultymultipliers.wrong"), false);
+                break;
             default:
                 context.getSource().sendSuccess(new TranslatableComponent("check.villainousdifficultymultipliers.invalid").withStyle(ChatFormatting.RED), false);
                 context.getSource().sendSuccess(new TranslatableComponent("error.villainousdifficultymultipliers.listmultipliers"), false);
