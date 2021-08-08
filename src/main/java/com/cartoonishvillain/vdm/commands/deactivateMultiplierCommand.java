@@ -118,6 +118,10 @@ public class deactivateMultiplierCommand implements Command<CommandSourceStack> 
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("deactivation.villainousdifficultymultipliers.wrong"));
                 VDM.config.WRONG.set(false);
                 break;
+            case "pandemic":
+                broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("deactivation.villainousdifficultymultipliers.pandemic"));
+                VDM.config.PANDEMIC.set(false);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("deactivation.villainousdifficultymultipliers.allon"));
                 VDM.config.BLACKEYE.set(false);
@@ -134,6 +138,8 @@ public class deactivateMultiplierCommand implements Command<CommandSourceStack> 
                 VDM.config.FLAMMABLE.set(false);
                 VDM.config.VEGETARIAN.set(false);
                 VDM.config.WRONG.set(false);
+                VDM.config.PANDEMIC.set(false);
+
                 break;
             case "keystothecity":
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("deactivation.villainousdifficultymultipliers.keysallon"));

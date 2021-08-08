@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ServerConfig {
     public static final String SCATEGORY_DIFFICULTY_INCREASING = "Difficulty Increasing multiplier";
     public static final String SCATEGORY_DIFFICULTY_DECREASING = "Difficulty Decreasing multiplier";
+    public static final String SCATEGORY_DIFFICULTY_EXTERIOR = "Exterior Difficulty multiplier";
     public ConfigHelper.ConfigValueListener<Boolean> AGING;
     public ConfigHelper.ConfigValueListener<Boolean> BLACKEYE;
     public ConfigHelper.ConfigValueListener<Boolean> CANNON;
@@ -28,6 +29,8 @@ public class ServerConfig {
     public ConfigHelper.ConfigValueListener<Boolean> FUELEFFICIENT;
     public ConfigHelper.ConfigValueListener<Boolean> BLACKSMITHING;
     public ConfigHelper.ConfigValueListener<Boolean> WARRANTY;
+
+    public ConfigHelper.ConfigValueListener<Boolean> PANDEMIC;
 
 
     public ServerConfig(ForgeConfigSpec.Builder builder, ConfigHelper.Subscriber subscriber){
@@ -51,10 +54,12 @@ public class ServerConfig {
         builder.comment("Enabled or Disable Difficulty Decreasing Multipliers. True is activated, False is deactivated").push(SCATEGORY_DIFFICULTY_DECREASING);
         this.KINETIC = subscriber.subscribe(builder.comment("Future technology embedded into your skin allows you to store up kinetic energy from attacks to release on your foes on your next attack, adding up to 50 hearts of damage maximum.").define("KineticMultiplier", false));
         this.UNDYING = subscriber.subscribe(builder.comment("When you are about to die, you're instantly brought back to full health. Allows you to get back into the fight immediately, but does still increase your death counters.").define("undyingMultiplier", false));
-
-        this.FUELEFFICIENT = subscriber.subscribe(builder.comment("Modern furnaces can get 4 times the use out of fuel.").define("fuelEfficient", false));
-        this.BLACKSMITHING = subscriber.subscribe(builder.comment("Stronger understanding of proper anvil usage makes you less likely to damage it.").define("blacksmithing", false));
-        this.WARRANTY = subscriber.subscribe(builder.comment("Tools may be replaced when they are destroyed.").define("Warranty", false));
+        this.FUELEFFICIENT = subscriber.subscribe(builder.comment("Modern furnaces can get 4 times the use out of fuel.").define("fuelEfficientMultiplier", false));
+        this.BLACKSMITHING = subscriber.subscribe(builder.comment("Stronger understanding of proper anvil usage makes you less likely to damage it.").define("blacksmithingMultiplier", false));
+        this.WARRANTY = subscriber.subscribe(builder.comment("Tools may be replaced when they are destroyed.").define("warrantyMultiplier", false));
         builder.pop();
+
+        builder.comment("Exterior multipliers. May be increasing or decreasing. All of these are dependent on mods for registering.").push(SCATEGORY_DIFFICULTY_EXTERIOR);
+        this.PANDEMIC = subscriber.subscribe(builder.comment("All living entities that harm you have a chance to infect you with Immortuos Calyx, even if they aren't infected themselves").define("pandemicMultiplier", false));
     }
 }

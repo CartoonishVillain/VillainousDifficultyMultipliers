@@ -41,6 +41,7 @@ public class activeListCommand implements Command<CommandSourceStack> {
             if(VDM.config.HARDENED.get()) {string.set(string.get() + ChatFormatting.RED + "Hardened, "); count.set(count.get()+1);}
             if(VDM.config.KARMICJUSTICE.get()) {string.set(string.get() + ChatFormatting.RED + "Karmic Justice, "); count.set(count.get()+1);}
             if(VDM.config.KINETIC.get()) {string.set(string.get() + ChatFormatting.BLUE + "Kinetic, "); count.set(count.get()+1);}
+            if(VDM.config.PANDEMIC.get()) {string.set(string.get() + checkForSupport("Pandemic, ", VDM.isCalyxLoaded, true)); count.set(count.get()+1);}
             if(VDM.config.SHIFT.get()) {string.set(string.get() + ChatFormatting.RED + "Shift, "); count.set(count.get()+1);}
             if(VDM.config.SOFTSKIN.get()) {string.set(string.get() + ChatFormatting.RED + "Soft Skin, "); count.set(count.get()+1);}
             if(VDM.config.UNDYING.get()) {string.set(string.get() + ChatFormatting.BLUE + "Undying, "); count.set(count.get()+1);}
@@ -60,5 +61,12 @@ public class activeListCommand implements Command<CommandSourceStack> {
 
 
         return 0;
+    }
+    private String checkForSupport(String name, boolean modNeeded, boolean IncreasingMultiplier){
+        if(modNeeded){
+            if(IncreasingMultiplier) return ChatFormatting.RED + name;
+            else return ChatFormatting.BLUE + name;
+        }
+        else return ChatFormatting.GRAY + name;
     }
 }

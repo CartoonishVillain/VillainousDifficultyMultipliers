@@ -1,5 +1,7 @@
 package com.cartoonishvillain.vdm.Events;
 
+import com.cartoonishvillain.ImmortuosCalyx.ImmortuosCalyx;
+import com.cartoonishvillain.ImmortuosCalyx.Infection.InfectionManagerCapability;
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapability;
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
@@ -632,6 +634,25 @@ public class ForgeEvents {
             }
                     ((Mob) livingEntity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<Player>((Mob) livingEntity, Player.class, true, false));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void activatePandemic(LivingDamageEvent event){
+        if(event.getEntityLiving() instanceof Player && event.getSource().getDirectEntity() instanceof Mob && VDM.isCalyxLoaded && VDM.config.PANDEMIC.get()){
+            event.getEntityLiving().getCapability(InfectionManagerCapability.INSTANCE).ifPresent(h->{
+                int roll = event.getEntityLiving().getRandom().nextInt(20);
+                if(roll <= 1){
+                    roll = event.getEntityLiving().getRandom().nextInt(60-15) + 15;
+                    int armor = event.getEntityLiving().getArmorValue();
+                    double resist = h.getResistance();
+                    double armorInfectResist = ImmortuosCalyx.config.ARMORRESISTMULTIPLIER.get();
+                    int conversionThreshold = (int) ((roll - (armor*armorInfectResist))/resist);
+                    if(conversionThreshold > event.getEntityLiving().getRandom().nextInt(30)){ // rolls for infection. If random value rolls below threshold, target is at risk of infection.
+                        h.setInfectionProgressIfLower(1);
+                    }
+                }
+            });
         }
     }
 
