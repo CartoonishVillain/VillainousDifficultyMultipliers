@@ -29,6 +29,7 @@ public class ServerConfig {
     public ConfigHelper.ConfigValueListener<Boolean> FUELEFFICIENT;
     public ConfigHelper.ConfigValueListener<Boolean> BLACKSMITHING;
     public ConfigHelper.ConfigValueListener<Boolean> WARRANTY;
+    public ConfigHelper.ConfigValueListener<Boolean> CELEBRATION;
 
     public ConfigHelper.ConfigValueListener<Boolean> PANDEMIC;
 
@@ -57,6 +58,7 @@ public class ServerConfig {
         this.FUELEFFICIENT = subscriber.subscribe(builder.comment("Modern furnaces can get 4 times the use out of fuel.").define("fuelEfficientMultiplier", false));
         this.BLACKSMITHING = subscriber.subscribe(builder.comment("Stronger understanding of proper anvil usage makes you less likely to damage it.").define("blacksmithingMultiplier", false));
         this.WARRANTY = subscriber.subscribe(builder.comment("Tools may be replaced when they are destroyed.").define("warrantyMultiplier", false));
+        this.CELEBRATION = subscriber.subscribe(builder.comment("Npc villagers may celebrate on any given day").define("celebrationMultiplier", false));
         builder.pop();
 
         builder.comment("Exterior multipliers. May be increasing or decreasing. All of these are dependent on mods for registering.").push(SCATEGORY_DIFFICULTY_EXTERIOR);

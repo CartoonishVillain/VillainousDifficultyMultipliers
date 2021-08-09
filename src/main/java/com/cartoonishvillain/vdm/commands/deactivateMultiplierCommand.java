@@ -122,6 +122,10 @@ public class deactivateMultiplierCommand implements Command<CommandSourceStack> 
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("deactivation.villainousdifficultymultipliers.pandemic"));
                 VDM.config.PANDEMIC.set(false);
                 break;
+            case "celebration":
+                broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("deactivation.villainousdifficultymultipliers.celebration"));
+                VDM.config.CELEBRATION.set(false);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("deactivation.villainousdifficultymultipliers.allon"));
                 VDM.config.BLACKEYE.set(false);
@@ -148,6 +152,7 @@ public class deactivateMultiplierCommand implements Command<CommandSourceStack> 
                 VDM.config.FUELEFFICIENT.set(false);
                 VDM.config.BLACKSMITHING.set(false);
                 VDM.config.WARRANTY.set(false);
+                VDM.config.CELEBRATION.set(false);
                 break;
             default:
                 context.getSource().sendSuccess(new TranslatableComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(ChatFormatting.RED), false);

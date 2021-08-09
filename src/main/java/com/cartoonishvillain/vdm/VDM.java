@@ -2,6 +2,7 @@ package com.cartoonishvillain.vdm;
 
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapability;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
+import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import com.cartoonishvillain.vdm.Configs.ConfigHelper;
 import com.cartoonishvillain.vdm.Configs.ServerConfig;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,6 +47,7 @@ public class VDM
     {
         PlayerCapability.register();
         EntityCapability.register();
+        WorldCapability.register();
         isCalyxLoaded = ModList.get().isLoaded("immortuoscalyx");
     }
 

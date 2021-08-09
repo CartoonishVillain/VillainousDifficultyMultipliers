@@ -119,6 +119,10 @@ public class checkMultiplierCommand implements Command<CommandSourceStack> {
                 context.getSource().sendSuccess(new TextComponent(ChatFormatting.BOLD + "-=Wrong=-"), false);
                 context.getSource().sendSuccess(new TranslatableComponent("check.villainousdifficultymultipliers.wrong"), false);
                 break;
+            case "celebration":
+                context.getSource().sendSuccess(new TextComponent(ChatFormatting.BOLD + "-=Celebration=-"), false);
+                context.getSource().sendSuccess(new TranslatableComponent("check.villainousdifficultymultipliers.celebration"), false);
+                break;
             case "pandemic":
                 context.getSource().sendSuccess(new TextComponent(ChatFormatting.BOLD + "-=Pandemic=-"), false);
                 context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipiers.modrequirement", "Immortuos Calyx").withStyle(ChatFormatting.YELLOW), false);

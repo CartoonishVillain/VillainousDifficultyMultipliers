@@ -6,6 +6,8 @@ import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapabilit
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
+import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
+import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityManager;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
 import com.cartoonishvillain.vdm.Entities.Goals.CrossbowAngerManagement;
 import com.cartoonishvillain.vdm.Entities.Goals.RangedAngerManagment;
@@ -13,8 +15,11 @@ import com.cartoonishvillain.vdm.Fatiguedamage;
 import com.cartoonishvillain.vdm.VDM;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.stats.Stats;
@@ -41,6 +46,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Score;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
@@ -83,6 +89,12 @@ public class ForgeEvents {
             EntityCapabilityManager provider = new EntityCapabilityManager();
             event.addCapability(new ResourceLocation(VDM.MODID, "entitycapabilities"), provider);
         }
+    }
+
+    @SubscribeEvent
+    public static void worldRegister(AttachCapabilitiesEvent<Level> event){
+            WorldCapabilityManager provider = new WorldCapabilityManager();
+            event.addCapability(new ResourceLocation(VDM.MODID, "worldcapabilities"), provider);
     }
 
     @SubscribeEvent
@@ -656,6 +668,45 @@ public class ForgeEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void CelebrationStart(TickEvent.WorldTickEvent event) {
+        if (!event.world.isClientSide() && VDM.config.CELEBRATION.get()) {
+            event.world.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
+                if(h.isNight() && event.world.isDay()) {
+                    h.setisNight(false);
+                    int chance = event.world.getRandom().nextInt(9);
+                    if (chance <= 1) {
+                        h.setCelebrationStatus(true);
+                        broadcast(event.world.getServer(), new TranslatableComponent("info.villainousdifficultymultipliers.party").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    }
+                }
+                else if(!h.isNight() && !event.world.isDay()){h.setisNight(true);}
+            });
+
+        }
+    }
+
+    @SubscribeEvent
+    public static void Celebration(TickEvent.WorldTickEvent event){
+        if (!event.world.isClientSide()){
+            event.world.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
+                if (h.getCelebrationStatus()){
+                    ArrayList<Player> players = (ArrayList<Player>) event.world.players();
+                    for(Player player : players){
+                        if (!player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)){
+                            player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 20, 0, false, false));
+                        }
+                    }
+                }
+                //celebrations stop at night with npc villagers, lest they want the zombies to get them.
+                if(!event.world.isDay() && h.getCelebrationStatus()){
+                    h.setCelebrationStatus(false);
+                    broadcast(event.world.getServer(), new TranslatableComponent("info.villainousdifficultymultipliers.partyend").withStyle(ChatFormatting.LIGHT_PURPLE));
+                }
+            });
+        }
+    }
+
     private static void agecheck(int age, LivingEntity livingEntity){
         if(age >= 4) livingEntity.remove(Entity.RemovalReason.DISCARDED);
     }
@@ -666,6 +717,10 @@ public class ForgeEvents {
         int select = random.nextInt(music.size());
         if(select == music.size()) select--;
         return music.get(select);
+    }
+
+    private static void broadcast(MinecraftServer server, Component translationTextComponent){
+        server.getPlayerList().broadcastMessage(translationTextComponent, ChatType.CHAT, UUID.randomUUID());
     }
 
 

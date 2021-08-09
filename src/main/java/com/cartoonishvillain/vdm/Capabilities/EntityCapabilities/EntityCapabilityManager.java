@@ -52,6 +52,7 @@ public class EntityCapabilityManager implements IEntityCapability, ICapabilityPr
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("retaliation", retaliation);
         tag.putInt("age", age);
+        tag.putBoolean("wrong", wrong);
         return tag;
     }
 
@@ -59,5 +60,6 @@ public class EntityCapabilityManager implements IEntityCapability, ICapabilityPr
     public void deserializeNBT(CompoundTag nbt) {
         retaliation = nbt.getBoolean("retaliation");
         age = nbt.getInt("age");
+        wrong = nbt.getBoolean("wrong");
     }
 }
