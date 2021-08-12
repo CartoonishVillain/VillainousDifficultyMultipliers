@@ -31,6 +31,7 @@ public class ServerConfig {
     public ConfigHelper.ConfigValueListener<Boolean> WARRANTY;
     public ConfigHelper.ConfigValueListener<Boolean> CELEBRATION;
     public ConfigHelper.ConfigValueListener<Boolean> RESTED;
+    public ConfigHelper.ConfigValueListener<Boolean> WILD;
 
     public ConfigHelper.ConfigValueListener<Boolean> PANDEMIC;
 
@@ -61,6 +62,7 @@ public class ServerConfig {
         this.WARRANTY = subscriber.subscribe(builder.comment("Tools may be replaced when they are destroyed.").define("warrantyMultiplier", false));
         this.CELEBRATION = subscriber.subscribe(builder.comment("Npc villagers may celebrate on any given day").define("celebrationMultiplier", false));
         this.RESTED = subscriber.subscribe(builder.comment("Resting works wonders to heal you...").define("restedMultiplier", false));
+        this.WILD = subscriber.subscribe(builder.comment("Your attacks cause a surge of uncontrollable magic to manifest.. for better or worse.").define("wildMultiplier", false));
         builder.pop();
 
         builder.comment("Exterior multipliers. May be increasing or decreasing. All of these are dependent on mods for registering.").push(SCATEGORY_DIFFICULTY_EXTERIOR);

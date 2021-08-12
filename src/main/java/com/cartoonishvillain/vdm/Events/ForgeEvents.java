@@ -17,6 +17,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -52,6 +53,7 @@ import net.minecraft.world.scores.Score;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -722,6 +724,44 @@ public class ForgeEvents {
                 h.setBlackEyeStatus(false);
             });
             player.sendMessage(new TranslatableComponent("info.villainousdifficultymultipliers.rested").withStyle(ChatFormatting.GREEN), UUID.randomUUID());
+        }
+    }
+
+    @SubscribeEvent
+    public static void WildMagic(LivingDamageEvent event){
+        if(event.getSource().getEntity() instanceof Player && !event.getEntityLiving().level.isClientSide() && VDM.config.WILD.get()){
+            Player aggressor = (Player) event.getSource().getEntity();
+            DamageSource damageSource = event.getSource();
+            if(!damageSource.isExplosion() && !damageSource.isFire() && aggressor != event.getEntityLiving()) {//damage source is (probably) melee
+                Random random = new Random();
+                if(random.nextInt(100) < 15){
+                    aggressor.sendMessage(new TranslatableComponent("info.villainousdifficultymultipliers.wild").withStyle(ChatFormatting.DARK_PURPLE), UUID.randomUUID());
+                    RandomAttackDecider.Activate(event.getEntityLiving().level, aggressor, event.getEntityLiving());
+                }
+            }
+        }
+    }
+
+
+    @SubscribeEvent
+    public static void PlayerShoutEvent(ServerChatEvent chatEvent){
+        chatEvent.getPlayer().getCapability(PlayerCapability.INSTANCE).ifPresent(h->{
+            if(h.getShoutTicks() > 0){
+                String msg = chatEvent.getComponent().getString();
+                msg = msg.toUpperCase();
+                chatEvent.setComponent(new TextComponent(msg));
+            }
+        });
+    }
+
+    @SubscribeEvent
+    public static void PlayerTickDown(TickEvent.PlayerTickEvent event){
+        if(!event.player.level.isClientSide()) {
+            event.player.getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
+                if (h.getShoutTicks() > 0) {
+                    h.setShoutTicks(h.getShoutTicks() - 1);
+                }
+            });
         }
     }
 

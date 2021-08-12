@@ -5,4 +5,6 @@ public interface IPlayerCapability {
     float getKineticBuildup();
     void setBlackEyeStatus(boolean set);
     void setKineticBuildup(float damage);
+    void setShoutTicks(int ticks);
+    int getShoutTicks();
 }

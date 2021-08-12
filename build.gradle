@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.17.1-1.4.0.3'
+version = '1.17.1-1.5'
 group = 'com.cartoonishvillain.villainousdifficultymultipliers' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'villainousdifficultymultipliers'
 
@@ -126,7 +126,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.27'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.33'
 //    implementation fg.deobf("curse.maven:immortuoscalyx-411857:3406910")
     compileOnly fg.deobf("curse.maven:immortuoscalyx-411857:3406910")
 
