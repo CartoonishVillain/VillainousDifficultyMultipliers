@@ -43,6 +43,7 @@ public class activeListCommand implements Command<CommandSourceStack> {
             if(VDM.config.KARMICJUSTICE.get()) {string.set(string.get() + ChatFormatting.RED + "Karmic Justice, "); count.set(count.get()+1);}
             if(VDM.config.KINETIC.get()) {string.set(string.get() + ChatFormatting.BLUE + "Kinetic, "); count.set(count.get()+1);}
             if(VDM.config.PANDEMIC.get()) {string.set(string.get() + checkForSupport("Pandemic, ", VDM.isCalyxLoaded, true)); count.set(count.get()+1);}
+            if(VDM.config.RESTED.get()) {string.set(string.get() + ChatFormatting.BLUE + "Rested, "); count.set(count.get()+1);}
             if(VDM.config.SHIFT.get()) {string.set(string.get() + ChatFormatting.RED + "Shift, "); count.set(count.get()+1);}
             if(VDM.config.SOFTSKIN.get()) {string.set(string.get() + ChatFormatting.RED + "Soft Skin, "); count.set(count.get()+1);}
             if(VDM.config.UNDYING.get()) {string.set(string.get() + ChatFormatting.BLUE + "Undying, "); count.set(count.get()+1);}

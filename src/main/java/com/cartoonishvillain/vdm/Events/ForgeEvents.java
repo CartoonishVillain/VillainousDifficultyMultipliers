@@ -57,6 +57,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -704,6 +705,23 @@ public class ForgeEvents {
                     broadcast(event.world.getServer(), new TranslatableComponent("info.villainousdifficultymultipliers.partyend").withStyle(ChatFormatting.LIGHT_PURPLE));
                 }
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void Rested(PlayerWakeUpEvent event){
+
+        if(!event.wakeImmediately() && !event.getEntityLiving().level.isClientSide() && event.getEntityLiving() instanceof Player && VDM.config.RESTED.get()){
+            Player player = (Player) event.getEntityLiving();
+            player.setHealth(player.getMaxHealth());
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20*30, 0));
+            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20*30, 0));
+            player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 20*30, 1));
+            player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20, 1));
+            player.getCapability(PlayerCapability.INSTANCE).ifPresent(h ->{
+                h.setBlackEyeStatus(false);
+            });
+            player.sendMessage(new TranslatableComponent("info.villainousdifficultymultipliers.rested").withStyle(ChatFormatting.GREEN), UUID.randomUUID());
         }
     }
 

@@ -127,6 +127,10 @@ public class activateMultiplierCommand implements Command<CommandSourceStack> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.celebration"));
                 VDM.config.CELEBRATION.set(true);
                 break;
+            case "rested":
+                broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.rested"));
+                VDM.config.RESTED.set(true);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.allwarning").withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
                 broadcast(context.getSource().getLevel().getServer(), new TranslatableComponent("activation.villainousdifficultymultipliers.allon"));
@@ -155,6 +159,7 @@ public class activateMultiplierCommand implements Command<CommandSourceStack> {
                 VDM.config.BLACKSMITHING.set(true);
                 VDM.config.WARRANTY.set(true);
                 VDM.config.CELEBRATION.set(true);
+                VDM.config.RESTED.set(true);
                 break;
             default:
                 context.getSource().sendSuccess(new TranslatableComponent("activation.villainousdifficultymultipliers.invalid").withStyle(ChatFormatting.RED), false);
