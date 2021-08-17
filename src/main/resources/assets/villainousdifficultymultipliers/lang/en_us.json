@@ -69,7 +69,7 @@
   "deactivation.villainousdifficultymultipliers.wrong": "Difficulty Multiplier: Wrong off!",
   "deactivation.villainousdifficultymultipliers.pandemic": "Difficulty Multiplier: Pandemic off!",
   "deactivation.villainousdifficultymultipliers.celebration": "Difficulty Multiplier: Celebration off!",
-  "deactivation.villainousdifficultymultipliers.rested": "Difficulty Multiplier: Celebration off!",
+  "deactivation.villainousdifficultymultipliers.rested": "Difficulty Multiplier: Rested off!",
   "deactivation.villainousdifficultymultipliers.wild": "Difficulty Multiplier: Wild off!",
   "error.villainousdifficultymultipliers.listmultipliers": "Run /vdm list for a list of available multipliers!",
   "activation.villainousdifficultymultipliers.invalid": "Activation failed! Invalid multiplier!",
