@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 public class EntityCapabilityManager implements IEntityCapability, ICapabilityProvider, INBTSerializable<CompoundNBT> {
     protected boolean retaliation = false;
     protected int age = 0;
+    protected boolean wrong = false;
     public final LazyOptional<IEntityCapability> holder = LazyOptional.of(()->this);
     @Override
     public boolean getRetaliationStatus() {
@@ -33,6 +34,16 @@ public class EntityCapabilityManager implements IEntityCapability, ICapabilityPr
         this.age = age;
     }
 
+    @Override
+    public boolean getWrong() {
+        return wrong;
+    }
+
+    @Override
+    public void setWrong(boolean set) {
+        wrong = set;
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nonnull Direction side) {
@@ -45,6 +56,7 @@ public class EntityCapabilityManager implements IEntityCapability, ICapabilityPr
         CompoundNBT tag = new CompoundNBT();
         tag.putBoolean("retaliation", retaliation);
         tag.putInt("age", age);
+        tag.putBoolean("wrong", wrong);
         return tag;
     }
 
@@ -52,5 +64,6 @@ public class EntityCapabilityManager implements IEntityCapability, ICapabilityPr
     public void deserializeNBT(CompoundNBT nbt) {
         retaliation = nbt.getBoolean("retaliation");
         age = nbt.getInt("age");
+        wrong = nbt.getBoolean("wrong");
     }
 }

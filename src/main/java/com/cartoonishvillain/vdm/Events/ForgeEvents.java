@@ -1,9 +1,13 @@
 package com.cartoonishvillain.vdm.Events;
 
+import com.cartoonishvillain.ImmortuosCalyx.ImmortuosCalyx;
+import com.cartoonishvillain.ImmortuosCalyx.Infection.InfectionManagerCapability;
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapability;
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
+import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
+import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityManager;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
 import com.cartoonishvillain.vdm.Entities.Goals.CrossbowAngerManagement;
 import com.cartoonishvillain.vdm.Entities.Goals.RangedAngerManagment;
@@ -15,15 +19,14 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -34,6 +37,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreCriteria;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.ServerStatisticsManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
@@ -41,16 +45,20 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.*;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -79,10 +87,16 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void entityRegister(AttachCapabilitiesEvent<Entity> event){
-        if(event.getObject() instanceof AnimalEntity || event.getObject() instanceof VillagerEntity){
+        if(event.getObject() instanceof LivingEntity){
             EntityCapabilityManager provider = new EntityCapabilityManager();
             event.addCapability(new ResourceLocation(VDM.MODID, "entitycapabilities"), provider);
         }
+    }
+
+    @SubscribeEvent
+    public static void worldRegister(AttachCapabilitiesEvent<World> event){
+            WorldCapabilityManager provider = new WorldCapabilityManager();
+            event.addCapability(new ResourceLocation(VDM.MODID, "worldcapabilities"), provider);
     }
 
     @SubscribeEvent
@@ -204,7 +218,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void Shift(EntityJoinWorldEvent event){
-        if(!event.getWorld().isClientSide() && event.getWorld().getServer().getPlayerCount() != 0){
+        if(!event.getWorld().isClientSide() && event.getWorld().getServer().getPlayerCount() != 0 && event.getEntity().tickCount == 1){
                 if(VDM.config.SHIFT.get()) {
                     if (event.getEntity().getType() == EntityType.ZOMBIE) {
                         ZombieEntity entity = (ZombieEntity) event.getEntity();
@@ -581,6 +595,173 @@ public class ForgeEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void Vegetarian(LivingEntityUseItemEvent.Finish event){
+        if(!event.getEntity().level.isClientSide() && event.getEntityLiving() instanceof PlayerEntity && event.getItem().getItem().isEdible() && VDM.config.VEGETARIAN.get()){
+            Food foodProperties = event.getItem().getItem().getFoodProperties();
+            if(foodProperties.isMeat()){
+                event.getEntityLiving().addEffect(new EffectInstance(Effects.BLINDNESS, 15*20, 0));
+                event.getEntityLiving().addEffect(new EffectInstance(Effects.HUNGER, 30*20, 1));
+                event.getEntityLiving().addEffect(new EffectInstance(Effects.CONFUSION, 15*20, 0));
+                event.getEntityLiving().addEffect(new EffectInstance(Effects.WEAKNESS, 30*20, 0));
+                event.getEntityLiving().sendMessage(new TranslationTextComponent("status.villainousdifficultymultipliers.vegetarian").withStyle(TextFormatting.RED), event.getEntityLiving().getUUID());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void seedWrong(EntityJoinWorldEvent event){
+        Entity e = event.getEntity();
+        if (!e.level.isClientSide() && e instanceof LivingEntity){
+            EntityType eType = e.getType();
+            if(eType == EntityType.ENDERMAN || eType == EntityType.ZOMBIFIED_PIGLIN || eType == EntityType.WOLF || eType == EntityType.BEE || eType == EntityType.LLAMA){
+                Random random = new Random();
+                int chance = random.nextInt(30);
+                if(chance <= 1) e.getCapability(EntityCapability.INSTANCE).ifPresent(h->{
+                    h.setWrong(true);
+                });
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void activateWrong(LivingEvent.LivingUpdateEvent event){
+        LivingEntity livingEntity = event.getEntityLiving();
+        if(livingEntity.tickCount == 100 && livingEntity instanceof MobEntity && VDM.config.WRONG.get()) {
+            AtomicBoolean wrongStatus = new AtomicBoolean(false);
+            livingEntity.getCapability(EntityCapability.INSTANCE).ifPresent(h -> {
+                wrongStatus.set(h.getWrong());
+            });
+            EntityType eType = livingEntity.getType();
+            if (!livingEntity.level.isClientSide() && wrongStatus.get()){
+                Set<PrioritizedGoal> prioritizedGoals = ObfuscationReflectionHelper.getPrivateValue(GoalSelector.class, ((MobEntity) livingEntity).targetSelector, "field_220892_d");
+                ArrayList<Goal> toRemove = new ArrayList<>();
+                if(prioritizedGoals != null) {
+                    for (PrioritizedGoal prioritizedGoal : prioritizedGoals) {
+                        toRemove.add(prioritizedGoal.getGoal());
+                    }
+                }
+                for(Goal goal : toRemove){
+                    ((MobEntity) livingEntity).targetSelector.removeGoal(goal);
+                }
+                ((MobEntity) livingEntity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<ServerPlayerEntity>((MobEntity) livingEntity, ServerPlayerEntity.class, true, false));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void activatePandemic(LivingDamageEvent event){
+        if(event.getEntityLiving() instanceof PlayerEntity && event.getSource().getDirectEntity() instanceof MonsterEntity && VDM.isCalyxLoaded && VDM.config.PANDEMIC.get()){
+            event.getEntityLiving().getCapability(InfectionManagerCapability.INSTANCE).ifPresent(h->{
+                int roll = event.getEntityLiving().getRandom().nextInt(20);
+                if(roll <= 1){
+                    roll = event.getEntityLiving().getRandom().nextInt(60-15) + 15;
+                    int armor = event.getEntityLiving().getArmorValue();
+                    double resist = h.getResistance();
+                    double armorInfectResist = ImmortuosCalyx.config.ARMORRESISTMULTIPLIER.get();
+                    int conversionThreshold = (int) ((roll - (armor*armorInfectResist))/resist);
+                    if(conversionThreshold > event.getEntityLiving().getRandom().nextInt(30)){ // rolls for infection. If random value rolls below threshold, target is at risk of infection.
+                        h.setInfectionProgressIfLower(1);
+                    }
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void CelebrationStart(TickEvent.WorldTickEvent event) {
+        if (!event.world.isClientSide() && VDM.config.CELEBRATION.get()) {
+            event.world.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
+                if(h.isNight() && event.world.isDay()) {
+                    h.setisNight(false);
+                    int chance = event.world.getRandom().nextInt(9);
+                    if (chance <= 1) {
+                        h.setCelebrationStatus(true);
+                        broadcast(event.world.getServer(), new TranslationTextComponent("info.villainousdifficultymultipliers.party").withStyle(TextFormatting.LIGHT_PURPLE));
+                    }
+                }
+                else if(!h.isNight() && !event.world.isDay()){h.setisNight(true);}
+            });
+
+        }
+    }
+
+    @SubscribeEvent
+    public static void Celebration(TickEvent.WorldTickEvent event){
+        if (!event.world.isClientSide()){
+            event.world.getCapability(WorldCapability.INSTANCE).ifPresent(h->{
+                if (h.getCelebrationStatus()){
+                    ArrayList<ServerPlayerEntity> players = (ArrayList<ServerPlayerEntity>) event.world.players();
+                    for(ServerPlayerEntity player : players){
+                        if (!player.hasEffect(Effects.HERO_OF_THE_VILLAGE)){
+                            player.addEffect(new EffectInstance(Effects.HERO_OF_THE_VILLAGE, 20, 0, false, false));
+                        }
+                    }
+                }
+                //celebrations stop at night with npc villagers, lest they want the zombies to get them.
+                if(!event.world.isDay() && h.getCelebrationStatus()){
+                    h.setCelebrationStatus(false);
+                    broadcast(event.world.getServer(), new TranslationTextComponent("info.villainousdifficultymultipliers.partyend").withStyle(TextFormatting.LIGHT_PURPLE));
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void Rested(PlayerWakeUpEvent event){
+
+        if(!event.wakeImmediately() && !event.getEntityLiving().level.isClientSide() && event.getEntityLiving() instanceof PlayerEntity && VDM.config.RESTED.get()){
+            ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
+            player.setHealth(player.getMaxHealth());
+            player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 20*30, 0));
+            player.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 20*30, 0));
+            player.addEffect(new EffectInstance(Effects.ABSORPTION, 20*30, 1));
+            player.addEffect(new EffectInstance(Effects.SATURATION, 20, 1));
+            player.getCapability(PlayerCapability.INSTANCE).ifPresent(h ->{
+                h.setBlackEyeStatus(false);
+            });
+            player.sendMessage(new TranslationTextComponent("info.villainousdifficultymultipliers.rested").withStyle(TextFormatting.GREEN), UUID.randomUUID());
+        }
+    }
+
+    @SubscribeEvent
+    public static void WildMagic(LivingDamageEvent event){
+        if(event.getSource().getEntity() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide() && VDM.config.WILD.get()){
+            ServerPlayerEntity aggressor = (ServerPlayerEntity) event.getSource().getEntity();
+            DamageSource damageSource = event.getSource();
+            if(!damageSource.isExplosion() && !damageSource.isFire() && aggressor != event.getEntityLiving()) {//damage source is (probably) melee
+                Random random = new Random();
+                if(random.nextInt(100) < 15){
+                    aggressor.sendMessage(new TranslationTextComponent("info.villainousdifficultymultipliers.wild").withStyle(TextFormatting.DARK_PURPLE), UUID.randomUUID());
+                    RandomAttackDecider.Activate(event.getEntityLiving().level, aggressor, event.getEntityLiving());
+                }
+            }
+        }
+    }
+
+
+    @SubscribeEvent
+    public static void PlayerShoutEvent(ServerChatEvent chatEvent){
+        chatEvent.getPlayer().getCapability(PlayerCapability.INSTANCE).ifPresent(h->{
+            if(h.getShoutTicks() > 0){
+                String msg = chatEvent.getComponent().getString();
+                msg = msg.toUpperCase();
+                chatEvent.setComponent(new StringTextComponent(msg));
+            }
+        });
+    }
+
+    @SubscribeEvent
+    public static void PlayerTickDown(TickEvent.PlayerTickEvent event){
+        if(!event.player.level.isClientSide()) {
+            event.player.getCapability(PlayerCapability.INSTANCE).ifPresent(h -> {
+                if (h.getShoutTicks() > 0) {
+                    h.setShoutTicks(h.getShoutTicks() - 1);
+                }
+            });
+        }
+    }
+
     private static void agecheck(int age, LivingEntity livingEntity){
         if(age >= 4) livingEntity.remove();
     }
@@ -591,6 +772,10 @@ public class ForgeEvents {
         int select = random.nextInt(music.size());
         if(select == music.size()) select--;
         return music.get(select);
+    }
+
+    private static void broadcast(MinecraftServer server, ITextComponent translationTextComponent){
+        server.getPlayerList().broadcastMessage(translationTextComponent, ChatType.CHAT, UUID.randomUUID());
     }
 
 

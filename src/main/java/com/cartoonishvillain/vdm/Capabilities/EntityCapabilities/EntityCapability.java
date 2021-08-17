@@ -22,6 +22,7 @@ public class EntityCapability {
                 CompoundNBT tag = new CompoundNBT();
                 tag.putBoolean("retaliation", instance.getRetaliationStatus());
                 tag.putInt("age", instance.getAge());
+                tag.putBoolean("wrong", instance.getWrong());
                 return tag;
             }
 
@@ -30,6 +31,7 @@ public class EntityCapability {
                 CompoundNBT tag = (CompoundNBT) nbt;
                 instance.setRetaliationStatus(tag.getBoolean("retaliation"));
                 instance.setAge(tag.getInt("age"));
+                instance.setWrong(tag.getBoolean("wrong"));
             }
         }, new Callable<EntityCapabilityManager>(){
             @Override

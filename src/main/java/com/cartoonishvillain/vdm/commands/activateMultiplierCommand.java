@@ -111,6 +111,30 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.flammable"));
                 VDM.config.FLAMMABLE.set(true);
                 break;
+            case "vegetarian":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.vegetarian"));
+                VDM.config.VEGETARIAN.set(true);
+                break;
+            case "wrong":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.wrong"));
+                VDM.config.WRONG.set(true);
+                break;
+            case "pandemic":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.pandemic"));
+                VDM.config.PANDEMIC.set(true);
+                break;
+            case "wild":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.wild"));
+                VDM.config.WILD.set(true);
+                break;
+            case "rested":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.rested"));
+                VDM.config.RESTED.set(true);
+                break;
+            case "celebration":
+                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.celebration"));
+                VDM.config.CELEBRATION.set(true);
+                break;
             case "heroic":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allwarning").withStyle(TextFormatting.RED, TextFormatting.BOLD));
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.allon"));
@@ -126,6 +150,9 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.ANGER.set(true);
                 VDM.config.UNSTABLE.set(true);
                 VDM.config.FLAMMABLE.set(true);
+                VDM.config.WRONG.set(true);
+                VDM.config.VEGETARIAN.set(true);
+                VDM.config.PANDEMIC.set(true);
                 break;
             case "keystothecity":
                 broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.keysallwarning").withStyle(TextFormatting.BLUE, TextFormatting.BOLD));
@@ -135,6 +162,9 @@ public class activateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.FUELEFFICIENT.set(true);
                 VDM.config.BLACKSMITHING.set(true);
                 VDM.config.WARRANTY.set(true);
+                VDM.config.WILD.set(true);
+                VDM.config.RESTED.set(true);
+                VDM.config.CELEBRATION.set(true);
                 break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("activation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);

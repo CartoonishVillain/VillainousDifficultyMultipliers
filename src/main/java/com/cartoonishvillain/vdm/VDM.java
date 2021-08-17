@@ -2,10 +2,12 @@ package com.cartoonishvillain.vdm;
 
 import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapability;
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
+import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import com.cartoonishvillain.vdm.Configs.ConfigHelper;
 import com.cartoonishvillain.vdm.Configs.ServerConfig;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -25,6 +27,7 @@ public class VDM
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
     public static ServerConfig config;
+    public static boolean isCalyxLoaded;
 
     public VDM() {
         config = ConfigHelper.register(ModConfig.Type.SERVER, ServerConfig::new);
@@ -44,6 +47,8 @@ public class VDM
     {
      PlayerCapability.register();
         EntityCapability.register();
+        WorldCapability.register();
+        isCalyxLoaded = ModList.get().isLoaded("immortuoscalyx");
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {

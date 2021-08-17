@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityProvider, INBTSerializable<CompoundNBT> {
     protected boolean blackEye = false;
     protected float kineticBuildup = 0f;
+    protected int shout = 0;
     public final LazyOptional<IPlayerCapability> holder = LazyOptional.of(()->this);
     @Override
     public boolean getBlackEyeStatus() {
@@ -30,6 +31,16 @@ public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityPr
     public void setKineticBuildup(float damage) {kineticBuildup += damage;
     if(kineticBuildup > 100f) kineticBuildup = 100;}
 
+    @Override
+    public int getShoutTicks() {
+        return shout;
+    }
+
+    @Override
+    public void setShoutTicks(int ticks) {
+        shout = ticks;
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nonnull Direction side) {
@@ -42,6 +53,7 @@ public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityPr
         CompoundNBT tag = new CompoundNBT();
         tag.putBoolean("blackeyestatus", blackEye);
         tag.putFloat("kineticbuildup", kineticBuildup);
+        tag.putInt("shout", shout);
         return tag;
     }
 
@@ -49,5 +61,6 @@ public class PlayerCapabilityManager implements IPlayerCapability, ICapabilityPr
     public void deserializeNBT(CompoundNBT nbt) {
         blackEye = nbt.getBoolean("blackeyestatus");
         kineticBuildup = nbt.getFloat("kineticbuildup");
+        shout = nbt.getInt("shout");
     }
 }

@@ -111,6 +111,31 @@ public class checkMultiplierCommand implements Command<CommandSource> {
                 context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Warranty=-"), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.warranty"), false);
                 break;
+            case "vegetarian":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Vegetarian=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.vegetarian"), false);
+                break;
+            case "wrong":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Wrong=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.wrong"), false);
+                break;
+            case "celebration":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Celebration=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.celebration"), false);
+                break;
+            case "rested":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Rested=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.rested"), false);
+                break;
+            case "wild":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Wild=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.wild"), false);
+                break;
+            case "pandemic":
+                context.getSource().sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Pandemic=-"), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("info.villainousdifficultymultipiers.modrequirement", "Immortuos Calyx").withStyle(TextFormatting.YELLOW), false);
+                context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.pandemic"), false);
+                break;
             default:
                 context.getSource().sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);
                 context.getSource().sendSuccess(new TranslationTextComponent("error.villainousdifficultymultipliers.listmultipliers"), false);

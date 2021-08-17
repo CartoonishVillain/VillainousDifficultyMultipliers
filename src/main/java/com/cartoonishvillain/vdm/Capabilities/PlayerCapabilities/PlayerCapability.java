@@ -22,6 +22,7 @@ public class PlayerCapability {
                 CompoundNBT tag = new CompoundNBT();
                 tag.putBoolean("blackeyestatus", instance.getBlackEyeStatus());
                 tag.putFloat("kineticbuildup", instance.getKineticBuildup());
+                tag.putInt("shout", instance.getShoutTicks());
                 return tag;
             }
 
@@ -30,6 +31,7 @@ public class PlayerCapability {
                 CompoundNBT tag = (CompoundNBT) nbt;
                 instance.setBlackEyeStatus(tag.getBoolean("blackeyestatus"));
                 instance.setKineticBuildup(tag.getFloat("kineticbuildup"));
+                instance.setShoutTicks(tag.getInt("shout"));
             }
         }, new Callable<PlayerCapabilityManager>(){
             @Override
