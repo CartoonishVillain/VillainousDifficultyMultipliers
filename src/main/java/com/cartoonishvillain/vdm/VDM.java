@@ -45,9 +45,6 @@ public class VDM
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        PlayerCapability.register();
-        EntityCapability.register();
-        WorldCapability.register();
         isCalyxLoaded = ModList.get().isLoaded("immortuoscalyx");
     }
 

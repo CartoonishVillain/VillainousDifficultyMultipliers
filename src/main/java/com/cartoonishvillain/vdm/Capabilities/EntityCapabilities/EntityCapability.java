@@ -8,7 +8,4 @@ public class EntityCapability {
     @CapabilityInject(IEntityCapability.class)
     public static Capability<IEntityCapability> INSTANCE = null;
 
-    public static void register() {
-        CapabilityManager.INSTANCE.register(IEntityCapability.class);
-    }
 }

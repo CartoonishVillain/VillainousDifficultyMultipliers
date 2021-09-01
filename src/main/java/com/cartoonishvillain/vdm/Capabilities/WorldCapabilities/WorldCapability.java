@@ -8,7 +8,4 @@ public class WorldCapability {
     @CapabilityInject(IWorldCapability.class)
     public static Capability<IWorldCapability> INSTANCE = null;
 
-    public static void register(){
-        CapabilityManager.INSTANCE.register(IWorldCapability.class);
-    }
 }
