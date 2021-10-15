@@ -22,8 +22,6 @@ public class CheckMultiplierCommand {
                     return check(context.getSource(), "cannon");
                 })).then(Commands.literal("venom").executes(context -> {
                     return check(context.getSource(), "venom");
-                })).then(Commands.literal("shift").executes(context -> {
-                    return check(context.getSource(), "shift");
                 })).then(Commands.literal("karmicjustice").executes(context -> {
                     return check(context.getSource(), "karmicjustice");
                 })).then(Commands.literal("aging").executes(context -> {
@@ -66,12 +64,29 @@ public class CheckMultiplierCommand {
                     return check(context.getSource(), "heroic");
                 })).then(Commands.literal("keystothecity").executes(context -> {
                     return check(context.getSource(), "keystothecity");
+                })).then(Commands.literal("inferno").executes(context -> {
+                    return check(context.getSource(), "inferno");
+                })).then(Commands.literal("eruptiveswarm").executes(context -> {
+                    return check(context.getSource(), "eruptiveswarm");
                 }))));
+
+        //Temporarily removed.
+//        .then(Commands.literal("shift").executes(context -> {
+//            return check(context.getSource(), "shift");
+//        }))
     }
 
 
     private static int check(CommandSource context, String string){
         switch (string){
+            case "inferno":
+                context.sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Inferno=-"), false);
+                context.sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.inferno"), false);
+                break;
+            case "eruptiveswarm":
+                context.sendSuccess(new StringTextComponent(TextFormatting.BOLD + "-=Eruptive Swarm=-"), false);
+                context.sendSuccess(new TranslationTextComponent("check.villainousdifficultymultipliers.eruptiveswarm"), false);
+                break;
             case "blackeye":
             case "black_eye":
             case "black eye":

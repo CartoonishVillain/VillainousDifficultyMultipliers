@@ -22,6 +22,8 @@ public class ServerConfig {
     public ConfigHelper.ConfigValueListener<Boolean> FLAMMABLE;
     public ConfigHelper.ConfigValueListener<Boolean> VEGETARIAN;
     public ConfigHelper.ConfigValueListener<Boolean> WRONG;
+    public ConfigHelper.ConfigValueListener<Boolean> INFERNO;
+    public ConfigHelper.ConfigValueListener<Boolean> ERUPTIVESWARM;
 
     public ConfigHelper.ConfigValueListener<Boolean> KINETIC;
     public ConfigHelper.ConfigValueListener<Boolean> UNDYING;
@@ -42,7 +44,7 @@ public class ServerConfig {
         this.CANNON = subscriber.subscribe(builder.comment("Bombs away! Creepers always explode on death, regardless of method.").define("cannonMultiplier", false));
         this.FATIGUE = subscriber.subscribe(builder.comment("Phantoms are a lame punishment for lack of sleep. Enjoy debuffs and eventual death by lack of sleep with this modifier!").define("fatigueMultiplier", false));
         this.KARMICJUSTICE = subscriber.subscribe(builder.comment("There is a 1 in 20 chance any animal usually farmed for food will explode violently when a player hits them. Tread Lightly.").define("karmicJusticeMultiplier", false));
-        this.SHIFT = subscriber.subscribe(builder.comment("Fighting the same zombies gets old. Zombies are converted to drowned, husks, or zombie villagers instantly, skeletons are converted to strays instantly, and creepers are always supercharged.").define("shiftMultiplier", false));
+        this.SHIFT = subscriber.subscribe(builder.comment("!!!Temporarily Disabled in Code!!! Fighting the same zombies gets old. Zombies are converted to drowned, husks, or zombie villagers instantly, skeletons are converted to strays instantly, and creepers are always supercharged.").define("shiftMultiplier", false));
         this.SOFTSKIN = subscriber.subscribe(builder.comment("Your particularly soft skin makes you more vulnerable to damage. All incoming damage has an extra 50% added to it.").define("softSkinMultiplier", false));
         this.VENOM = subscriber.subscribe(builder.comment("Cave spiders inflict poison for a brief moment on easy, and both wither and poison on normal and hard. Spiders also get the ability to poison you for a shorter amount of time.").define("venomMultiplier", false));
         this.HARDENED = subscriber.subscribe(builder.comment("All hostile mobs have increased health").define("hardenedMultiplier", false));
@@ -51,6 +53,8 @@ public class ServerConfig {
         this.FLAMMABLE = subscriber.subscribe(builder.comment("Entities on fire will stay on fire until water is applied (or they have died)").define("flammableMultiplier", false));
         this.VEGETARIAN = subscriber.subscribe(builder.comment("Eating meat makes you feel sick to your stomach. Whether or not it's for moral reasons, health reasons, or anything in between.").define("vegetarianMultiplier", false));
         this.WRONG = subscriber.subscribe(builder.comment("That's just... Wrong - Some neutral mobs may have more aggression towards you.").define("wrongMultiplier", false));
+        this.INFERNO = subscriber.subscribe(builder.comment("Burn! BURN! BUUURRRRN! - Fire damage does significantly more damage.").define("infernoMultiplier", false));
+        this.ERUPTIVESWARM = subscriber.subscribe(builder.comment("Bees will explode violently upon stinging.").define("eruptiveSwarmMultiplier", false));
         builder.pop();
 
         builder.comment("Enabled or Disable Difficulty Decreasing Multipliers. True is activated, False is deactivated").push(SCATEGORY_DIFFICULTY_DECREASING);

@@ -36,10 +36,12 @@ public class activeListCommand implements Command<CommandSource> {
         if(VDM.config.BLACKSMITHING.get()) {string.set(string.get() + TextFormatting.BLUE + "Blacksmithing, "); count.set(count.get()+1);}
         if(VDM.config.CANNON.get()) {string.set(string.get() + TextFormatting.RED + "Cannon, "); count.set(count.get()+1);}
         if(VDM.config.CELEBRATION.get()) {string.set(string.get() + TextFormatting.BLUE + "Celebration, "); count.set(count.get()+1);}
+        if(VDM.config.ERUPTIVESWARM.get()) {string.set(string.get() + TextFormatting.RED + "Eruptive Swarm, "); count.set(count.get()+1);}
         if(VDM.config.FATIGUE.get()) {string.set(string.get() + TextFormatting.RED + "Fatigue, "); count.set(count.get()+1);}
         if(VDM.config.FLAMMABLE.get()) {string.set(string.get() + TextFormatting.RED + "Flammable, "); count.set(count.get()+1);}
         if(VDM.config.FUELEFFICIENT.get()) {string.set(string.get() + TextFormatting.BLUE + "Fuel Efficient, "); count.set(count.get()+1);}
         if(VDM.config.HARDENED.get()) {string.set(string.get() + TextFormatting.RED + "Hardened, "); count.set(count.get()+1);}
+        if(VDM.config.INFERNO.get()) {string.set(string.get() + TextFormatting.RED + "Inferno, "); count.set(count.get()+1);}
         if(VDM.config.KARMICJUSTICE.get()) {string.set(string.get() + TextFormatting.RED + "Karmic Justice, "); count.set(count.get()+1);}
         if(VDM.config.KINETIC.get()) {string.set(string.get() + TextFormatting.BLUE + "Kinetic, "); count.set(count.get()+1);}
         if(VDM.config.PANDEMIC.get()) {string.set(string.get() + checkForSupport("Pandemic, ", VDM.isCalyxLoaded, true)); count.set(count.get()+1);}

@@ -26,8 +26,6 @@ public class ActivateMultiplierCommand {
                     return activate(context.getSource(), "cannon");
                 })).then(Commands.literal("venom").executes(context -> {
                     return activate(context.getSource(), "venom");
-                })).then(Commands.literal("shift").executes(context -> {
-                    return activate(context.getSource(), "shift");
                 })).then(Commands.literal("karmicjustice").executes(context -> {
                     return activate(context.getSource(), "karmicjustice");
                 })).then(Commands.literal("aging").executes(context -> {
@@ -70,12 +68,29 @@ public class ActivateMultiplierCommand {
                     return activate(context.getSource(), "heroic");
                 })).then(Commands.literal("keystothecity").executes(context -> {
                     return activate(context.getSource(), "keystothecity");
+                })).then(Commands.literal("inferno").executes(context -> {
+                    return activate(context.getSource(), "inferno");
+                })).then(Commands.literal("eruptiveswarm").executes(context -> {
+                    return activate(context.getSource(), "eruptiveswarm");
                 }))));
+
+        //temporarily removed.
+//        .then(Commands.literal("shift").executes(context -> {
+//            return activate(context.getSource(), "shift");
+//        }))
     }
 
 
     private static int activate(CommandSource context, String string){
         switch (string){
+            case "inferno":
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.inferno"));
+                VDM.config.INFERNO.set(true);
+                break;
+            case "eruptiveswarm":
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.eruptiveswarm"));
+                VDM.config.ERUPTIVESWARM.set(true);
+                break;
             case "blackeye":
                 broadcast(context.getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.blackeye"));
                 VDM.config.BLACKEYE.set(true);
@@ -186,6 +201,8 @@ public class ActivateMultiplierCommand {
                 VDM.config.WRONG.set(true);
                 VDM.config.VEGETARIAN.set(true);
                 VDM.config.PANDEMIC.set(true);
+                VDM.config.INFERNO.set(true);
+                VDM.config.ERUPTIVESWARM.set(true);
                 break;
             case "keystothecity":
                 broadcast(context.getLevel().getServer(), new TranslationTextComponent("activation.villainousdifficultymultipliers.keysallwarning").withStyle(TextFormatting.BLUE, TextFormatting.BOLD));

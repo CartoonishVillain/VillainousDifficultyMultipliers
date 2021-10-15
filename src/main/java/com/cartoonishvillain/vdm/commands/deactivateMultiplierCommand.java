@@ -25,8 +25,6 @@ public class DeactivateMultiplierCommand {
                     return deactivate(context.getSource(), "cannon");
                 })).then(Commands.literal("venom").executes(context -> {
                     return deactivate(context.getSource(), "venom");
-                })).then(Commands.literal("shift").executes(context -> {
-                    return deactivate(context.getSource(), "shift");
                 })).then(Commands.literal("karmicjustice").executes(context -> {
                     return deactivate(context.getSource(), "karmicjustice");
                 })).then(Commands.literal("aging").executes(context -> {
@@ -69,12 +67,29 @@ public class DeactivateMultiplierCommand {
                     return deactivate(context.getSource(), "heroic");
                 })).then(Commands.literal("keystothecity").executes(context -> {
                     return deactivate(context.getSource(), "keystothecity");
+                })).then(Commands.literal("inferno").executes(context -> {
+                    return deactivate(context.getSource(), "inferno");
+                })).then(Commands.literal("eruptiveswarm").executes(context -> {
+                    return deactivate(context.getSource(), "eruptiveswarm");
                 }))));
+
+        //Temporarily Removed
+//        .then(Commands.literal("shift").executes(context -> {
+//        return deactivate(context.getSource(), "shift");
+//        }))
     }
 
 
     private static int deactivate(CommandSource context, String string){
         switch (string){
+            case "inferno":
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.inferno"));
+                VDM.config.INFERNO.set(false);
+                break;
+            case "eruptiveswarm":
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.eruptiveswarm"));
+                VDM.config.ERUPTIVESWARM.set(false);
+                break;
             case "blackeye":
             case "black_eye":
             case "black eye":
@@ -191,6 +206,8 @@ public class DeactivateMultiplierCommand {
                 VDM.config.WRONG.set(false);
                 VDM.config.VEGETARIAN.set(false);
                 VDM.config.PANDEMIC.set(false);
+                VDM.config.INFERNO.set(true);
+                VDM.config.ERUPTIVESWARM.set(true);
                 break;
             case "keystothecity":
                 broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.keysallon"));
