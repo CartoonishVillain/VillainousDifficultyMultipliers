@@ -24,7 +24,7 @@ public class listCommand implements Command<CommandSourceStack> {
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.list").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD), false);
         context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.increasing").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), false);
-        context.getSource().sendSuccess(new TextComponent("Aging, Anger, Black Eye, Cannon, Fatigue, Flammable, Hardened, Karmic Justice, Pandemic, Shift, Soft Skin, Unstable, Vegetarian, Venom, Wrong"), false);
+        context.getSource().sendSuccess(new TextComponent("Aging, Anger, Black Eye, Cannon, Eruptive Swarm, Fatigue, Flammable, Hardened, Inferno, Karmic Justice, Soft Skin, Unstable, Venom"), false);
         context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.heroic"), false);
         context.getSource().sendSuccess(new TranslatableComponent("info.villainousdifficultymultipliers.decreasing").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD), false);
         context.getSource().sendSuccess(new TextComponent("Blacksmithing, Celebration, Fuel Efficient, Kinetic, Rested, Undying, Warranty, Wild"), false);

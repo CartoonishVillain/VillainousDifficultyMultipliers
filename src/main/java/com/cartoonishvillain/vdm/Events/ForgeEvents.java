@@ -8,7 +8,10 @@ import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilit
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityManager;
+import com.cartoonishvillain.vdm.Commands.ActivateMultiplierCommand;
+import com.cartoonishvillain.vdm.Commands.CheckMultiplierCommand;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
+import com.cartoonishvillain.vdm.Commands.DeactivateMultiplierCommand;
 import com.cartoonishvillain.vdm.Entities.Goals.CrossbowAngerManagement;
 import com.cartoonishvillain.vdm.Entities.Goals.RangedAngerManagment;
 import com.cartoonishvillain.vdm.Fatiguedamage;
@@ -76,6 +79,9 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void serverLoad(RegisterCommandsEvent event){
         CommandManager.register(event.getDispatcher());
+        ActivateMultiplierCommand.register(event.getDispatcher());
+        DeactivateMultiplierCommand.register(event.getDispatcher());
+        CheckMultiplierCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent
@@ -217,89 +223,89 @@ public class ForgeEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void Shift(EntityJoinWorldEvent event){
-        if(!event.getWorld().isClientSide() && event.getWorld().getServer().getPlayerCount() != 0){
-                if(VDM.config.SHIFT.get()) {
-                    if (event.getEntity().getType() == EntityType.ZOMBIE) {
-                        Zombie entity = (Zombie) event.getEntity();
-                        Random random = new Random();
-                        Vec3 vector3d = entity.position();
-
-                        ItemStack mainHand = entity.getItemInHand(InteractionHand.MAIN_HAND);
-                        ItemStack offHand = entity.getItemInHand(InteractionHand.OFF_HAND);
-                        ItemStack Helm = entity.getItemBySlot(EquipmentSlot.HEAD);
-                        ItemStack Chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-                        ItemStack Leg = entity.getItemBySlot(EquipmentSlot.LEGS);
-                        ItemStack Boots = entity.getItemBySlot(EquipmentSlot.FEET);
-
-                        int chance = random.nextInt(12);
-                        if (chance < 6) {
-                            Drowned newMob = new Drowned(EntityType.DROWNED, entity.level);
-                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
-                            newMob.setItemInHand(InteractionHand.MAIN_HAND, mainHand);
-                            newMob.setItemInHand(InteractionHand.OFF_HAND, offHand);
-                            newMob.setItemSlot(EquipmentSlot.HEAD, Helm);
-                            newMob.setItemSlot(EquipmentSlot.CHEST, Chest);
-                            newMob.setItemSlot(EquipmentSlot.LEGS, Leg);
-                            newMob.setItemSlot(EquipmentSlot.FEET, Boots);
-                            entity.level.addFreshEntity(newMob);
-                            entity.setPos(entity.getX(), -1, entity.getZ());
-                            entity.kill();
-                        } else if (chance < 11) {
-                            Husk newMob = new Husk(EntityType.HUSK, entity.level);
-                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
-                            entity.level.addFreshEntity(newMob);
-                            entity.setPos(entity.getX(), -1, entity.getZ());
-                            entity.kill();
-                        } else {
-                            ZombieVillager newMob = new ZombieVillager(EntityType.ZOMBIE_VILLAGER, entity.level);
-                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
-                            entity.level.addFreshEntity(newMob);
-                            entity.setPos(entity.getX(), -1, entity.getZ());
-                            entity.kill();
-                        }
-                    }
-                    if (event.getEntity().getType() == EntityType.SKELETON) {
-                        Skeleton entity = (Skeleton) event.getEntity();
-                        Vec3 vector3d = entity.position();
-
-                        ItemStack mainHand = entity.getItemInHand(InteractionHand.MAIN_HAND);
-                        ItemStack offHand = entity.getItemInHand(InteractionHand.OFF_HAND);
-                        ItemStack Helm = entity.getItemBySlot(EquipmentSlot.HEAD);
-                        ItemStack Chest = entity.getItemBySlot(EquipmentSlot.CHEST);
-                        ItemStack Leg = entity.getItemBySlot(EquipmentSlot.LEGS);
-                        ItemStack Boots = entity.getItemBySlot(EquipmentSlot.FEET);
-
-                        Stray newMob = new Stray(EntityType.STRAY, entity.level);
-                        newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
-
-                        newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
-                        newMob.setItemInHand(InteractionHand.MAIN_HAND, mainHand);
-                        newMob.setItemInHand(InteractionHand.OFF_HAND, offHand);
-                        newMob.setItemSlot(EquipmentSlot.HEAD, Helm);
-                        newMob.setItemSlot(EquipmentSlot.CHEST, Chest);
-                        newMob.setItemSlot(EquipmentSlot.LEGS, Leg);
-                        newMob.setItemSlot(EquipmentSlot.FEET, Boots);
-
-                        entity.setPos(entity.getX(), -1, entity.getZ());
-                        entity.level.addFreshEntity(newMob);
-                        entity.kill();
-                    }
-                    if (event.getEntity().getType() == EntityType.CREEPER) {
-                        Creeper creeperEntity = (Creeper) event.getEntity();
-                        if(creeperEntity.isPowered()){return;}
-                        else{
-                            try {
-                                creeperEntity.getEntityData().set(ObfuscationReflectionHelper.getPrivateValue(Creeper.class, creeperEntity, "f_32274_"), true);
-                            }catch (NullPointerException e){
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-        }
-    }
+//    @SubscribeEvent
+//    public static void Shift(EntityJoinWorldEvent event){
+//        if(!event.getWorld().isClientSide() && event.getWorld().getServer().getPlayerCount() != 0){
+//                if(VDM.config.SHIFT.get()) {
+//                    if (event.getEntity().getType() == EntityType.ZOMBIE) {
+//                        Zombie entity = (Zombie) event.getEntity();
+//                        Random random = new Random();
+//                        Vec3 vector3d = entity.position();
+//
+//                        ItemStack mainHand = entity.getItemInHand(InteractionHand.MAIN_HAND);
+//                        ItemStack offHand = entity.getItemInHand(InteractionHand.OFF_HAND);
+//                        ItemStack Helm = entity.getItemBySlot(EquipmentSlot.HEAD);
+//                        ItemStack Chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+//                        ItemStack Leg = entity.getItemBySlot(EquipmentSlot.LEGS);
+//                        ItemStack Boots = entity.getItemBySlot(EquipmentSlot.FEET);
+//
+//                        int chance = random.nextInt(12);
+//                        if (chance < 6) {
+//                            Drowned newMob = new Drowned(EntityType.DROWNED, entity.level);
+//                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
+//                            newMob.setItemInHand(InteractionHand.MAIN_HAND, mainHand);
+//                            newMob.setItemInHand(InteractionHand.OFF_HAND, offHand);
+//                            newMob.setItemSlot(EquipmentSlot.HEAD, Helm);
+//                            newMob.setItemSlot(EquipmentSlot.CHEST, Chest);
+//                            newMob.setItemSlot(EquipmentSlot.LEGS, Leg);
+//                            newMob.setItemSlot(EquipmentSlot.FEET, Boots);
+//                            entity.level.addFreshEntity(newMob);
+//                            entity.setPos(entity.getX(), -1, entity.getZ());
+//                            entity.kill();
+//                        } else if (chance < 11) {
+//                            Husk newMob = new Husk(EntityType.HUSK, entity.level);
+//                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
+//                            entity.level.addFreshEntity(newMob);
+//                            entity.setPos(entity.getX(), -1, entity.getZ());
+//                            entity.kill();
+//                        } else {
+//                            ZombieVillager newMob = new ZombieVillager(EntityType.ZOMBIE_VILLAGER, entity.level);
+//                            newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
+//                            entity.level.addFreshEntity(newMob);
+//                            entity.setPos(entity.getX(), -1, entity.getZ());
+//                            entity.kill();
+//                        }
+//                    }
+//                    if (event.getEntity().getType() == EntityType.SKELETON) {
+//                        Skeleton entity = (Skeleton) event.getEntity();
+//                        Vec3 vector3d = entity.position();
+//
+//                        ItemStack mainHand = entity.getItemInHand(InteractionHand.MAIN_HAND);
+//                        ItemStack offHand = entity.getItemInHand(InteractionHand.OFF_HAND);
+//                        ItemStack Helm = entity.getItemBySlot(EquipmentSlot.HEAD);
+//                        ItemStack Chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+//                        ItemStack Leg = entity.getItemBySlot(EquipmentSlot.LEGS);
+//                        ItemStack Boots = entity.getItemBySlot(EquipmentSlot.FEET);
+//
+//                        Stray newMob = new Stray(EntityType.STRAY, entity.level);
+//                        newMob.setPos(vector3d.x, vector3d.y, vector3d.z);
+//
+//                        newMob.teleportTo(vector3d.x, vector3d.y, vector3d.z);
+//                        newMob.setItemInHand(InteractionHand.MAIN_HAND, mainHand);
+//                        newMob.setItemInHand(InteractionHand.OFF_HAND, offHand);
+//                        newMob.setItemSlot(EquipmentSlot.HEAD, Helm);
+//                        newMob.setItemSlot(EquipmentSlot.CHEST, Chest);
+//                        newMob.setItemSlot(EquipmentSlot.LEGS, Leg);
+//                        newMob.setItemSlot(EquipmentSlot.FEET, Boots);
+//
+//                        entity.setPos(entity.getX(), -1, entity.getZ());
+//                        entity.level.addFreshEntity(newMob);
+//                        entity.kill();
+//                    }
+//                    if (event.getEntity().getType() == EntityType.CREEPER) {
+//                        Creeper creeperEntity = (Creeper) event.getEntity();
+//                        if(creeperEntity.isPowered()){return;}
+//                        else{
+//                            try {
+//                                creeperEntity.getEntityData().set(ObfuscationReflectionHelper.getPrivateValue(Creeper.class, creeperEntity, "f_32274_"), true);
+//                            }catch (NullPointerException e){
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }
+//        }
+//    }
 
     @SubscribeEvent
     public static void BlackEye(LivingHealEvent event){
@@ -776,6 +782,23 @@ public class ForgeEvents {
         if(select == music.size()) select--;
         return music.get(select);
     }
+
+    @SubscribeEvent
+    public static void Inferno(LivingDamageEvent event){
+        if(event.getSource().equals(DamageSource.ON_FIRE) && !event.getEntityLiving().level.isClientSide && VDM.config.INFERNO.get()){
+            event.setAmount(event.getAmount() * 4);
+        }
+    }
+
+
+    @SubscribeEvent
+    public static void EruptiveSwarm(LivingDamageEvent event){
+        if(event.getSource().getEntity() != null && event.getSource().getEntity().getType() == EntityType.BEE && !event.getEntityLiving().level.isClientSide && VDM.config.ERUPTIVESWARM.get() && !event.getSource().isExplosion()){
+            event.getSource().getEntity().level.explode(event.getSource().getEntity(), event.getSource().getEntity().getX(), event.getSource().getEntity().getY(), event.getSource().getEntity().getZ(), 4, Explosion.BlockInteraction.NONE);
+        }
+    }
+
+
 
     private static void broadcast(MinecraftServer server, Component translationTextComponent){
         server.getPlayerList().broadcastMessage(translationTextComponent, ChatType.CHAT, UUID.randomUUID());
