@@ -8,7 +8,10 @@ import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilit
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityManager;
+import com.cartoonishvillain.vdm.Commands.ActivateMultiplierCommand;
+import com.cartoonishvillain.vdm.Commands.CheckMultiplierCommand;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
+import com.cartoonishvillain.vdm.Commands.DeactivateMultiplierCommand;
 import com.cartoonishvillain.vdm.Entities.Goals.CrossbowAngerManagement;
 import com.cartoonishvillain.vdm.Entities.Goals.RangedAngerManagment;
 import com.cartoonishvillain.vdm.Fatiguedamage;
@@ -75,6 +78,9 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void serverLoad(RegisterCommandsEvent event){
         CommandManager.register(event.getDispatcher());
+        ActivateMultiplierCommand.register(event.getDispatcher());
+        DeactivateMultiplierCommand.register(event.getDispatcher());
+        CheckMultiplierCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent

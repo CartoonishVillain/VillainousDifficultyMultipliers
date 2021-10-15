@@ -1,14 +1,7 @@
 package com.cartoonishvillain.vdm.Commands;
 
-
-import com.cartoonishvillain.vdm.Configs.ServerConfig;
 import com.cartoonishvillain.vdm.VDM;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.server.MinecraftServer;
@@ -19,123 +12,170 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.UUID;
 
-public class deactivateMultiplierCommand implements Command<CommandSource> {
-    private static final deactivateMultiplierCommand CMD = new deactivateMultiplierCommand();
-
-    public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher){
-        return Commands.literal("deactivate")
-                .requires(cs -> cs.hasPermission(2))
-                .then(Commands.argument("multiplier", StringArgumentType.word()).executes(CMD)
-                );
+public class DeactivateMultiplierCommand {
+    public static void register(CommandDispatcher<CommandSource> source) {
+        source.register(Commands.literal("vdm")
+                .then(Commands.literal("deactivate").requires(requirement -> {
+                    return requirement.hasPermission(2);
+                }).then(Commands.literal("anger").executes(context -> {
+                    return deactivate(context.getSource(), "anger");
+                })).then(Commands.literal("blackeye").executes(context -> {
+                    return deactivate(context.getSource(), "blackeye");
+                })).then(Commands.literal("cannon").executes(context -> {
+                    return deactivate(context.getSource(), "cannon");
+                })).then(Commands.literal("venom").executes(context -> {
+                    return deactivate(context.getSource(), "venom");
+                })).then(Commands.literal("shift").executes(context -> {
+                    return deactivate(context.getSource(), "shift");
+                })).then(Commands.literal("karmicjustice").executes(context -> {
+                    return deactivate(context.getSource(), "karmicjustice");
+                })).then(Commands.literal("aging").executes(context -> {
+                    return deactivate(context.getSource(), "aging");
+                })).then(Commands.literal("softskin").executes(context -> {
+                    return deactivate(context.getSource(), "softskin");
+                })).then(Commands.literal("fatigue").executes(context -> {
+                    return deactivate(context.getSource(), "fatigue");
+                })).then(Commands.literal("hardened").executes(context -> {
+                    return deactivate(context.getSource(), "hardened");
+                })).then(Commands.literal("hardened").executes(context -> {
+                    return deactivate(context.getSource(), "hardened");
+                })).then(Commands.literal("unstable").executes(context -> {
+                    return deactivate(context.getSource(), "unstable");
+                })).then(Commands.literal("kinetic").executes(context -> {
+                    return deactivate(context.getSource(), "kinetic");
+                })).then(Commands.literal("undying").executes(context -> {
+                    return deactivate(context.getSource(), "undying");
+                })).then(Commands.literal("fuelefficient").executes(context -> {
+                    return deactivate(context.getSource(), "fuelefficient");
+                })).then(Commands.literal("blacksmithing").executes(context -> {
+                    return deactivate(context.getSource(), "blacksmithing");
+                })).then(Commands.literal("warranty").executes(context -> {
+                    return deactivate(context.getSource(), "warranty");
+                })).then(Commands.literal("flammable").executes(context -> {
+                    return deactivate(context.getSource(), "flammable");
+                })).then(Commands.literal("vegetarian").executes(context -> {
+                    return deactivate(context.getSource(), "vegetarian");
+                })).then(Commands.literal("wrong").executes(context -> {
+                    return deactivate(context.getSource(), "wrong");
+                })).then(Commands.literal("pandemic").executes(context -> {
+                    return deactivate(context.getSource(), "pandemic");
+                })).then(Commands.literal("wild").executes(context -> {
+                    return deactivate(context.getSource(), "wild");
+                })).then(Commands.literal("rested").executes(context -> {
+                    return deactivate(context.getSource(), "rested");
+                })).then(Commands.literal("celebration").executes(context -> {
+                    return deactivate(context.getSource(), "celebration");
+                })).then(Commands.literal("heroic").executes(context -> {
+                    return deactivate(context.getSource(), "heroic");
+                })).then(Commands.literal("keystothecity").executes(context -> {
+                    return deactivate(context.getSource(), "keystothecity");
+                }))));
     }
 
-    @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        String newString = context.getArgument("multiplier", String.class);
-        ServerConfig config = VDM.config;
-        newString = newString.toLowerCase();
-        switch (newString){
+
+    private static int deactivate(CommandSource context, String string){
+        switch (string){
             case "blackeye":
             case "black_eye":
             case "black eye":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blackeye"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blackeye"));
                 VDM.config.BLACKEYE.set(false);
                 break;
             case "cannon":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.cannon"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.cannon"));
                 VDM.config.CANNON.set(false);
             case "venom":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.venom"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.venom"));
                 VDM.config.VENOM.set(false);
                 break;
             case "shift":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.shift"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.shift"));
                 VDM.config.SHIFT.set(false);
                 break;
             case "karmicjustice":
             case "karmic_justice":
             case "karmic justice":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.karmicjustice"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.karmicjustice"));
                 VDM.config.KARMICJUSTICE.set(false);
                 break;
             case "aging":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.aging"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.aging"));
                 VDM.config.AGING.set(false);
                 break;
             case "softskin":
             case "soft_skin":
             case "soft skin":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.softskin"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.softskin"));
                 VDM.config.SOFTSKIN.set(false);
                 break;
             case "fatigue":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.fatigue"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.fatigue"));
                 VDM.config.FATIGUE.set(false);
                 break;
             case "hardened":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.hardened"));
-                    VDM.config.HARDENED.set(false);
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.hardened"));
+                VDM.config.HARDENED.set(false);
                 break;
             case "anger":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.anger"));
-                    VDM.config.ANGER.set(false);
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.anger"));
+                VDM.config.ANGER.set(false);
                 break;
             case "unstable":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.unstable"));
-                    VDM.config.UNSTABLE.set(false);
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.unstable"));
+                VDM.config.UNSTABLE.set(false);
                 break;
             case "kinetic":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.kinetic"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.kinetic"));
                 VDM.config.KINETIC.set(false);
                 break;
             case "undying":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.undying"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.undying"));
                 VDM.config.UNDYING.set(false);
                 break;
             case "flammable":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.flammable"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.flammable"));
                 VDM.config.FLAMMABLE.set(false);
                 break;
             case "fuelefficient":
             case "fuel_efficient":
             case "fuel efficient":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.fuelefficient"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.fuelefficient"));
                 VDM.config.FUELEFFICIENT.set(false);
                 break;
             case "blacksmithing":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blacksmithing"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.blacksmithing"));
                 VDM.config.BLACKSMITHING.set(false);
                 break;
             case "warranty":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.warranty"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.warranty"));
                 VDM.config.WARRANTY.set(false);
                 break;
             case "vegetarian":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.vegetarian"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.vegetarian"));
                 VDM.config.VEGETARIAN.set(false);
                 break;
             case "wrong":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.wrong"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.wrong"));
                 VDM.config.WRONG.set(false);
                 break;
             case "pandemic":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.pandemic"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.pandemic"));
                 VDM.config.PANDEMIC.set(false);
                 break;
             case "celebration":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.celebration"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.celebration"));
                 VDM.config.CELEBRATION.set(false);
                 break;
             case "rested":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.rested"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.rested"));
                 VDM.config.RESTED.set(false);
                 break;
             case "wild":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.wild"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.wild"));
                 VDM.config.RESTED.set(false);
                 break;
             case "heroic":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.allon"));
                 VDM.config.BLACKEYE.set(false);
                 VDM.config.CANNON.set(false);
                 VDM.config.VENOM.set(false);
@@ -153,7 +193,7 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.PANDEMIC.set(false);
                 break;
             case "keystothecity":
-                broadcast(context.getSource().getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.keysallon"));
+                broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.keysallon"));
                 VDM.config.KINETIC.set(false);
                 VDM.config.UNDYING.set(false);
                 VDM.config.FUELEFFICIENT.set(false);
@@ -164,15 +204,14 @@ public class deactivateMultiplierCommand implements Command<CommandSource> {
                 VDM.config.CELEBRATION.set(false);
                 break;
             default:
-                context.getSource().sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);
-                context.getSource().sendSuccess(new TranslationTextComponent("error.villainousdifficultymultipliers.listmultipliers"), false);
+                context.sendSuccess(new TranslationTextComponent("deactivation.villainousdifficultymultipliers.invalid").withStyle(TextFormatting.RED), false);
+                context.sendSuccess(new TranslationTextComponent("error.villainousdifficultymultipliers.listmultipliers"), false);
                 break;
         }
-
         return 0;
     }
 
-    private void broadcast(MinecraftServer server, ITextComponent translationTextComponent){
+    private static void broadcast(MinecraftServer server, ITextComponent translationTextComponent){
         server.getPlayerList().broadcastMessage(translationTextComponent, ChatType.CHAT, UUID.randomUUID());
     }
 }
