@@ -218,7 +218,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void Shift(EntityJoinWorldEvent event){
-        if(!event.getWorld().isClientSide() && event.getWorld().getServer().getPlayerCount() != 0 && event.getEntity().tickCount == 1){
+        if(!event.getWorld().isClientSide() && event.getWorld().getServer().getPlayerCount() != 0){
                 if(VDM.config.SHIFT.get()) {
                     if (event.getEntity().getType() == EntityType.ZOMBIE) {
                         ZombieEntity entity = (ZombieEntity) event.getEntity();
