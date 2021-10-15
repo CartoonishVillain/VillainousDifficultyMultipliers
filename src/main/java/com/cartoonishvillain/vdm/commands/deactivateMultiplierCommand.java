@@ -206,8 +206,8 @@ public class DeactivateMultiplierCommand {
                 VDM.config.WRONG.set(false);
                 VDM.config.VEGETARIAN.set(false);
                 VDM.config.PANDEMIC.set(false);
-                VDM.config.INFERNO.set(true);
-                VDM.config.ERUPTIVESWARM.set(true);
+                VDM.config.INFERNO.set(false);
+                VDM.config.ERUPTIVESWARM.set(false);
                 break;
             case "keystothecity":
                 broadcast(context.getLevel().getServer(), new TranslationTextComponent("deactivation.villainousdifficultymultipliers.keysallon"));
