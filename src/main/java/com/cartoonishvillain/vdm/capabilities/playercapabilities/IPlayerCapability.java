@@ -1,4 +1,4 @@
-package com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities;
+package com.cartoonishvillain.vdm.capabilities.playercapabilities;
 
 public interface IPlayerCapability {
     boolean getBlackEyeStatus();

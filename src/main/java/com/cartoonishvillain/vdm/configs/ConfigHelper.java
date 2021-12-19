@@ -1,4 +1,4 @@
-package com.cartoonishvillain.vdm.Configs;
+package com.cartoonishvillain.vdm.configs;
 
 /*
 The MIT License (MIT)

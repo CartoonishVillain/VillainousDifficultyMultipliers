@@ -1,10 +1,7 @@
 package com.cartoonishvillain.vdm;
 
-import com.cartoonishvillain.vdm.Capabilities.EntityCapabilities.EntityCapability;
-import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
-import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
-import com.cartoonishvillain.vdm.Configs.ConfigHelper;
-import com.cartoonishvillain.vdm.Configs.ServerConfig;
+import com.cartoonishvillain.vdm.configs.ConfigHelper;
+import com.cartoonishvillain.vdm.configs.ServerConfig;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -15,7 +12,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,10 +58,6 @@ public class VDM
         // some example code to receive and process InterModComms from other mods
     }
     // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(FMLServerStartingEvent event) {
-        // do something when the server starts
-    }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)

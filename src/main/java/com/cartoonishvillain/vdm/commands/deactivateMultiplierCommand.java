@@ -1,15 +1,8 @@
-package com.cartoonishvillain.vdm.Commands;
+package com.cartoonishvillain.vdm.commands;
 
 
-import com.cartoonishvillain.vdm.Configs.ServerConfig;
 import com.cartoonishvillain.vdm.VDM;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;

@@ -1,4 +1,4 @@
-package com.cartoonishvillain.vdm.Capabilities.EntityCapabilities;
+package com.cartoonishvillain.vdm.capabilities.entitycapabilities;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;

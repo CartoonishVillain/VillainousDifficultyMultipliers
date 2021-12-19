@@ -1,8 +1,7 @@
-package com.cartoonishvillain.vdm.Commands;
+package com.cartoonishvillain.vdm.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 

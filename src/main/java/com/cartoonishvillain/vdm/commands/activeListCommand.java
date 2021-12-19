@@ -1,4 +1,4 @@
-package com.cartoonishvillain.vdm.Commands;
+package com.cartoonishvillain.vdm.commands;
 
 import com.cartoonishvillain.vdm.VDM;
 import com.mojang.brigadier.Command;

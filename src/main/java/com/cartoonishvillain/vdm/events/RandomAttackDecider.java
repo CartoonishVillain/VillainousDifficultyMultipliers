@@ -1,6 +1,6 @@
-package com.cartoonishvillain.vdm.Events;
+package com.cartoonishvillain.vdm.events;
 
-import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapability;
+import com.cartoonishvillain.vdm.capabilities.playercapabilities.PlayerCapability;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.effect.MobEffectInstance;

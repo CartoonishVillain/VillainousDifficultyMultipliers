@@ -1,4 +1,4 @@
-package com.cartoonishvillain.vdm.Entities.Goals;
+package com.cartoonishvillain.vdm.entities.goals;
 
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.monster.RangedAttackMob;

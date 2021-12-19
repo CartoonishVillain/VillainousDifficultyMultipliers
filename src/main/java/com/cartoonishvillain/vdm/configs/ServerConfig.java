@@ -1,4 +1,4 @@
-package com.cartoonishvillain.vdm.Configs;
+package com.cartoonishvillain.vdm.configs;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
