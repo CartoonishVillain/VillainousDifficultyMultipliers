@@ -20,7 +20,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.UUID;
 
-public class DeactivateMultiplierCommand {
+public class deactivateMultiplierCommand {
     public static void register(CommandDispatcher<CommandSourceStack> source) {
         source.register(Commands.literal("vdm")
                 .then(Commands.literal("deactivate").requires(requirement -> {

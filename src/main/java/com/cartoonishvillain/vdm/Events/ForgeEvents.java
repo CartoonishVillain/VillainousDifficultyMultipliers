@@ -8,10 +8,10 @@ import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilit
 import com.cartoonishvillain.vdm.Capabilities.PlayerCapabilities.PlayerCapabilityManager;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapability;
 import com.cartoonishvillain.vdm.Capabilities.WorldCapabilities.WorldCapabilityManager;
-import com.cartoonishvillain.vdm.Commands.ActivateMultiplierCommand;
 import com.cartoonishvillain.vdm.Commands.CheckMultiplierCommand;
 import com.cartoonishvillain.vdm.Commands.CommandManager;
-import com.cartoonishvillain.vdm.Commands.DeactivateMultiplierCommand;
+import com.cartoonishvillain.vdm.Commands.activateMultiplierCommand;
+import com.cartoonishvillain.vdm.Commands.deactivateMultiplierCommand;
 import com.cartoonishvillain.vdm.Entities.Goals.CrossbowAngerManagement;
 import com.cartoonishvillain.vdm.Entities.Goals.RangedAngerManagment;
 import com.cartoonishvillain.vdm.Fatiguedamage;
@@ -29,7 +29,6 @@ import net.minecraft.stats.ServerStatsCounter;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -79,8 +78,8 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void serverLoad(RegisterCommandsEvent event){
         CommandManager.register(event.getDispatcher());
-        ActivateMultiplierCommand.register(event.getDispatcher());
-        DeactivateMultiplierCommand.register(event.getDispatcher());
+        activateMultiplierCommand.register(event.getDispatcher());
+        deactivateMultiplierCommand.register(event.getDispatcher());
         CheckMultiplierCommand.register(event.getDispatcher());
     }
 

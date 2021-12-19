@@ -17,7 +17,7 @@ import net.minecraft.server.MinecraftServer;
 
 import java.util.UUID;
 
-public class ActivateMultiplierCommand {
+public class activateMultiplierCommand {
     public static void register(CommandDispatcher<CommandSourceStack> source) {
         source.register(Commands.literal("vdm")
                 .then(Commands.literal("activate").requires(requirement -> {
