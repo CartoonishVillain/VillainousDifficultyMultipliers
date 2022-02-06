@@ -109,7 +109,7 @@ public class ForgeEvents {
     public static void SoftSkin(LivingDamageEvent event){
         if(event.getEntityLiving() instanceof Player && !event.getEntityLiving().level.isClientSide()){
             Player target = (Player) event.getEntityLiving();
-                if(VDM.config.SOFTSKIN.get()){event.setAmount(event.getAmount() * 1.5f);}
+                if(VDM.config.SOFTSKIN.get()){event.setAmount(event.getAmount() * VDM.config.DAMAGEMULTIPLIER.get().floatValue());}
         }
     }
 
@@ -408,7 +408,7 @@ public class ForgeEvents {
             EntityType eType = e.getType();
             if(eType == EntityType.PIG || eType == EntityType.SHEEP || eType == EntityType.COW || eType == EntityType.MOOSHROOM || eType == EntityType.CHICKEN){
                 Random random = new Random();
-                int chance = random.nextInt(20);
+                int chance = random.nextInt(VDM.config.KARMICJUSTICESPAWNCHANCE.get());
                 if(chance <= 1) e.getCapability(EntityCapability.INSTANCE).ifPresent(h->{
                     h.setRetaliationStatus(true);
                 });
@@ -439,14 +439,14 @@ public class ForgeEvents {
     public static void Hardened(EntityJoinWorldEvent event){
         if(!event.getEntity().level.isClientSide() && event.getEntity() instanceof Monster){
             if(VDM.config.HARDENED.get()) {
-                float health = ((Monster) event.getEntity()).getHealth() * 0.5f;
+                float health = ((Monster) event.getEntity()).getHealth() * VDM.config.HARDENEDBOOST.get().floatValue() - 1f;
                 AttributeInstance modifiableAttributeInstance = ((Monster) event.getEntity()).getAttribute(Attributes.MAX_HEALTH);
                 if (modifiableAttributeInstance == null) {
                     return;
                 }
                 if(modifiableAttributeInstance.getModifiers().size() == 0) {
                     modifiableAttributeInstance.addTransientModifier(new AttributeModifier(UUID.fromString("D6F0BA2-1186-46AC-B896-C61C5CEE99CC"), "Hardened health boost", health, AttributeModifier.Operation.ADDITION));
-                    ((Monster) event.getEntity()).setHealth(((Monster) event.getEntity()).getHealth() * 1.5f);
+                    ((Monster) event.getEntity()).setHealth(((Monster) event.getEntity()).getHealth() * VDM.config.HARDENEDBOOST.get().floatValue());
                 }
             }
         }
@@ -509,11 +509,11 @@ public class ForgeEvents {
             if(VDM.config.UNSTABLE.get()) {
                 if (event.getEntity().getType() == EntityType.GHAST) {
                     Ghast ghastEntity = (Ghast) event.getEntity();
-                    ObfuscationReflectionHelper.setPrivateValue(Ghast.class, ghastEntity, 5, "f_32722_");
+                    ObfuscationReflectionHelper.setPrivateValue(Ghast.class, ghastEntity, VDM.config.EXPLOSIONSIZE.get(), "f_32722_");
                 }
                 if (event.getEntity().getType().equals(EntityType.CREEPER)) {
                     Creeper creeperEntity = (Creeper) event.getEntity();
-                    ObfuscationReflectionHelper.setPrivateValue(Creeper.class, creeperEntity, 5, "f_32272_");
+                    ObfuscationReflectionHelper.setPrivateValue(Creeper.class, creeperEntity, VDM.config.EXPLOSIONSIZE.get(), "f_32272_");
                 }
             }
         }
@@ -582,11 +582,11 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void FuelEfficiency(FurnaceFuelBurnTimeEvent event){
-        if(VDM.config.FUELEFFICIENT.get()) {event.setBurnTime(event.getBurnTime() * 4);}
+        if(VDM.config.FUELEFFICIENT.get()) {event.setBurnTime(event.getBurnTime() * VDM.config.FUELEFFICIENTVALUE.get());}
     }
 
     @SubscribeEvent
-    public static void Blacksmithing(AnvilRepairEvent event){if(VDM.config.BLACKSMITHING.get()){event.setBreakChance(0.06f);}}
+    public static void Blacksmithing(AnvilRepairEvent event){if(VDM.config.BLACKSMITHING.get()){event.setBreakChance(VDM.config.BLACKSMITHINGCHANCE.get().floatValue());}}
 
     @SubscribeEvent
     public static void Warranty(PlayerDestroyItemEvent event){
@@ -624,8 +624,8 @@ public class ForgeEvents {
             EntityType eType = e.getType();
             if(eType == EntityType.ENDERMAN || eType == EntityType.ZOMBIFIED_PIGLIN || eType == EntityType.WOLF || eType == EntityType.BEE || eType == EntityType.LLAMA){
                 Random random = new Random();
-                int chance = random.nextInt(30);
-                if(chance <= 1) e.getCapability(EntityCapability.INSTANCE).ifPresent(h->{
+                int chance = random.nextInt(VDM.config.WRONGSPAWNCHANCE.get());
+                if(chance <= 0) e.getCapability(EntityCapability.INSTANCE).ifPresent(h->{
                     h.setWrongStatus(true);
                 });
             }
@@ -682,8 +682,8 @@ public class ForgeEvents {
             event.world.getCapability(WorldCapability.INSTANCE).ifPresent(h -> {
                 if(h.isNight() && event.world.isDay()) {
                     h.setisNight(false);
-                    int chance = event.world.getRandom().nextInt(9);
-                    if (chance <= 1) {
+                    int chance = event.world.getRandom().nextInt(VDM.config.CELEBRATIONCHANCE.get());
+                    if (chance <= 0) {
                         h.setCelebrationStatus(true);
                         broadcast(event.world.getServer(), new TranslatableComponent("info.villainousdifficultymultipliers.party").withStyle(ChatFormatting.LIGHT_PURPLE));
                     }
@@ -739,7 +739,7 @@ public class ForgeEvents {
             DamageSource damageSource = event.getSource();
             if(!damageSource.isExplosion() && !damageSource.isFire() && aggressor != event.getEntityLiving()) {//damage source is (probably) melee
                 Random random = new Random();
-                if(random.nextInt(100) < 15){
+                if(random.nextInt(VDM.config.WILDCHANCE.get()) == 0){
                     aggressor.sendMessage(new TranslatableComponent("info.villainousdifficultymultipliers.wild").withStyle(ChatFormatting.DARK_PURPLE), UUID.randomUUID());
                     RandomAttackDecider.Activate(event.getEntityLiving().level, aggressor, event.getEntityLiving());
                 }
@@ -771,7 +771,7 @@ public class ForgeEvents {
     }
 
     private static void agecheck(int age, LivingEntity livingEntity){
-        if(age >= 4) livingEntity.remove(Entity.RemovalReason.DISCARDED);
+        if(age >= VDM.config.MAXIMUMAGE.get()) livingEntity.remove(Entity.RemovalReason.DISCARDED);
     }
 
     private static Item MusicDisc(){
@@ -793,7 +793,7 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void EruptiveSwarm(LivingDamageEvent event){
         if(event.getSource().getEntity() != null && event.getSource().getEntity().getType() == EntityType.BEE && !event.getEntityLiving().level.isClientSide && VDM.config.ERUPTIVESWARM.get() && !event.getSource().isExplosion()){
-            event.getSource().getEntity().level.explode(event.getSource().getEntity(), event.getSource().getEntity().getX(), event.getSource().getEntity().getY(), event.getSource().getEntity().getZ(), 4, Explosion.BlockInteraction.NONE);
+            event.getSource().getEntity().level.explode(event.getSource().getEntity(), event.getSource().getEntity().getX(), event.getSource().getEntity().getY(), event.getSource().getEntity().getZ(), VDM.config.ERUPTIVESWARMSIZE.get(), Explosion.BlockInteraction.NONE);
         }
     }
 
