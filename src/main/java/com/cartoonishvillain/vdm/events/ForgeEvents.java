@@ -563,7 +563,7 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void Undying(LivingDeathEvent event){
         if(!event.getEntityLiving().level.isClientSide()){
-            if (event.getEntityLiving() instanceof Player && VDM.config.UNDYING.get()){
+            if (event.getEntityLiving() instanceof Player && VDM.config.UNDYING.get() && !event.getSource().getMsgId().equals(DamageSource.OUT_OF_WORLD.msgId)){
                 event.setCanceled(true);
                 ((Player) event.getEntityLiving()).awardStat(Stats.DEATHS, 1);
                 ((Player) event.getEntityLiving()).getScoreboard().forAllObjectives(ObjectiveCriteria.DEATH_COUNT, event.getEntityLiving().getScoreboardName(), Score::increment);
